@@ -3,6 +3,7 @@ import 'package:assignment_4/Enums/FeedType.dart';
 import 'package:assignment_4/TimingContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:assignment_4/Navigation.dart';
 
 class EditFeed extends StatefulWidget {
   const EditFeed({super.key});
@@ -26,13 +27,13 @@ class _EditFeedState extends State<EditFeed> {
             const TimingContainer(),
             const Align(
               alignment: Alignment.bottomLeft,
-              child: Text("Feed Type", style: TextStyle(fontSize: 24.0)),
+              child: Text('Feed Type', style: TextStyle(fontSize: 24.0)),
             ),
             Row(
               children: [
-                buildRadioButton("Left", FeedType.LEFT),
-                buildRadioButton("Right", FeedType.RIGHT),
-                buildRadioButton("Bottle", FeedType.BOTTLE),
+                buildRadioButton('Left', FeedType.LEFT),
+                buildRadioButton('Right', FeedType.RIGHT),
+                buildRadioButton('Bottle', FeedType.BOTTLE),
               ],
             ),
             Expanded(
@@ -40,16 +41,20 @@ class _EditFeedState extends State<EditFeed> {
                   builder: buildNotes
               ),
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <ElevatedButton>[
-                ElevatedButton(
-                    onPressed: null,
-                    child: Text('Discard')
+              children: <Widget>[
+                Consumer<EditModel>(
+                  builder: (context, model, _) => ElevatedButton(
+                      onPressed: () => confirmDiscard(context),
+                      child: const Text('Discard')
+                  ),
                 ),
-                ElevatedButton(
-                    onPressed: null,
-                    child: Text('Save')
+                Consumer<EditModel>(
+                  builder: (context, model, _) => ElevatedButton(
+                      onPressed: () => confirmSave(context),
+                      child: const Text('Save')
+                  ),
                 ),
               ],
             )
@@ -72,7 +77,7 @@ class _EditFeedState extends State<EditFeed> {
       keyboardType: TextInputType.multiline,
       maxLines: null,
       expands: true,
-      decoration: const InputDecoration(hintText: "Notes"),
+      decoration: const InputDecoration(hintText: 'Notes'),
       onChanged: (value) => model.notes = value,
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
     );
@@ -89,6 +94,79 @@ class _EditFeedState extends State<EditFeed> {
             onChanged: (type) => model.feedType = type,
           );
         },
+      ),
+    );
+  }
+
+  void confirmDiscard(BuildContext context) {
+    TextButton confirmButton = TextButton(
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+        homeKey.currentState?.pop();
+      },
+      child: const Text('Discard')
+    );
+
+    TextButton denyButton = TextButton(
+        onPressed: () async {
+          Navigator.of(context, rootNavigator: true).pop();
+        },
+        child: const Text('Cancel')
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Discard'),
+        content: const Text('Are you sure you want to discard this session?'),
+        actions: [
+          confirmButton,
+          denyButton,
+        ],
+      ),
+    );
+  }
+
+  void confirmSave(BuildContext context) {
+    EditModel model = Provider.of<EditModel>(context, listen: false);
+
+    TextButton confirmButton = TextButton(
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).pop();
+          model.persist().then( (didSave) {
+            if (didSave) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Event saved!"),
+                duration: Duration(seconds: 2),
+              ));
+              homeKey.currentState?.pop();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("ERROR: Failed to save event!"),
+                duration: Duration(seconds: 2),
+              ));
+            }
+          });
+        },
+        child: const Text('Save')
+    );
+
+    TextButton denyButton = TextButton(
+        onPressed: () async {
+          Navigator.of(context, rootNavigator: true).pop();
+        },
+        child: const Text('Cancel')
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Discard'),
+        content: const Text('Are you sure you want to discard this session?'),
+        actions: [
+          confirmButton,
+          denyButton,
+        ],
       ),
     );
   }

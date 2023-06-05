@@ -22,7 +22,6 @@ class _RouteContainerState extends State<RouteContainer> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

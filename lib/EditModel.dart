@@ -6,6 +6,12 @@ import 'dart:async' as async;
 class EditModel extends ChangeNotifier {
 
   final Event _event = Event();
+  late async.Timer timer;
+
+  EditModel() {
+    timer = async.Timer.periodic(const Duration(seconds: 1), (_) {});
+    timer.cancel();
+  }
 
   DateTime? get time => _event.time;
   set time(DateTime? time) {
@@ -31,13 +37,6 @@ class EditModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  late async.Timer timer;
-
-  EditModel() {
-    timer = async.Timer.periodic(const Duration(seconds: 1), (_) {});
-    timer.cancel();
-  }
-
   void tick (async.Timer t) {
     endTime = DateTime.now();
   }
@@ -54,4 +53,8 @@ class EditModel extends ChangeNotifier {
   }
 
   bool get isTiming => timer.isActive;
+
+  Future<bool> persist() async {
+    return await Future<bool>.delayed(const Duration(seconds: 1), () => true);
+  }
 }
