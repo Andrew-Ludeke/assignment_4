@@ -8,12 +8,16 @@ class Event
   EventType? type;
   DateTime? time;
   String? notes;
-  int? duration;                    // Dart ints are 64-bit, but only 54-bit when compiling to JavaScript
+  int? duration;                    // Dart ints are 64-bit, but not when compiling to JavaScript
   FeedType? feedType;
   ToiletContents? toiletContents;
   String? imgUri;
 
-  DateTime? get endTime => time?.add(Duration(milliseconds: duration ?? 0));
+  DateTime? get endTime {
+    if (duration == null) return null;
+    return time?.add(Duration(milliseconds: duration!));
+  }
+
   set endTime (DateTime? end) {
     if (time == null) {
       duration == null;

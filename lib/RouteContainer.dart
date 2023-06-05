@@ -1,8 +1,8 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:assignment_4/HomeFlow.dart';
-import "package:assignment_4/TimelineFlow.dart";
+import 'package:assignment_4/TimelineFlow.dart';
 
 class RouteContainer extends StatefulWidget {
   const RouteContainer({super.key});
@@ -13,7 +13,7 @@ class RouteContainer extends StatefulWidget {
 
 class _RouteContainerState extends State<RouteContainer> {
 
-  String pageTitle ="Home";
+  String pageTitle ='Home';
   int index = 0;
 
   selectTab(int i) {
@@ -39,8 +39,8 @@ class _RouteContainerState extends State<RouteContainer> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: StreamBuilder<String?>(
             stream: streamProvider.pageTitleStream,
-            initialData: "Home",
-            builder: (context, snapshot) => Text(snapshot.data ?? "Narnia"),
+            initialData: 'Home',
+            builder: (context, snapshot) => Text(snapshot.data ?? 'Narnia'),
           ),
         ),
         body: Stack(
@@ -62,11 +62,11 @@ class _RouteContainerState extends State<RouteContainer> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: "Home",
+              label: 'Home',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.timeline),
-              label: "Timeline",
+              label: 'Timeline',
             ),
           ],
         ),

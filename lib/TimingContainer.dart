@@ -8,8 +8,6 @@ import 'package:provider/provider.dart';
 class TimingContainer extends StatefulWidget {
   const TimingContainer({super.key});
 
-  //final TimingModel timingModel;
-
   @override
   State<TimingContainer> createState() => _TimingContainerState();
 }
@@ -37,12 +35,12 @@ class _TimingContainerState extends State<TimingContainer> with TickerProviderSt
         TabBar(
           controller: tabController,
           tabs: const <Tab>[
-            Tab(text: "Timer", icon: Icon(Icons.timer)),
-            Tab(text: "Manual Entry", icon: Icon(Icons.text_fields)),
+            Tab(text: "Timer"),//, icon: Icon(Icons.timer)),
+            Tab(text: "Manual Entry"),//, icon: Icon(Icons.text_fields)),
           ],
         ),
         SizedBox(
-          height: 200,
+          height: 160,
           child: TabBarView(
             controller: tabController,
             children: const <Widget>[

@@ -13,17 +13,20 @@ class ManualEntry extends StatefulWidget {
 class _ManualEntryState extends State<ManualEntry> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        TimeEntryRow(
-            label: "Start Time",
-            buildFunction: buildStartTextField,
-        ),
-        TimeEntryRow(
-          label: "End Time",
-          buildFunction: buildEndTextField,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 32.0),
+      child: Column(
+        children: <Widget>[
+          TimeEntryRow(
+              label: "Start Time",
+              buildFunction: buildStartTextField,
+          ),
+          TimeEntryRow(
+            label: "End Time",
+            buildFunction: buildEndTextField,
+          ),
+        ],
+      ),
     );
   }
 

@@ -15,17 +15,7 @@ class EditFeed extends StatefulWidget {
 
 class _EditFeedState extends State<EditFeed> {
 
-  Event event = Event();
-
   final TextStyle radioStyle = const TextStyle(fontSize: 9.0);
-
-  void setFeedType(FeedType? type) {
-    setState(() {
-      event.feedType = type;
-    });
-  }
-
-  TextEditingController notesController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,27 +38,59 @@ class _EditFeedState extends State<EditFeed> {
               ],
             ),
             Expanded(
-              child: TextField(
-                controller: notesController,
-                keyboardType: TextInputType.multiline,
-                expands: true,
-                maxLines: null,
-                decoration: const InputDecoration(hintText: "Notes"),
+              child: Consumer<EditModel>(
+                  builder: buildNotes
               ),
             ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <ElevatedButton>[
+                ElevatedButton(
+                    onPressed: null,
+                    child: Text('Discard')
+                ),
+                ElevatedButton(
+                    onPressed: null,
+                    child: Text('Save')
+                ),
+              ],
+            )
           ],
         ),
       ),
     );
   }
 
+  Widget buildNotes(context, model, _) {
+    TextEditingController notesController = TextEditingController();
+
+    notesController.text = model.notes ?? '';
+    notesController.selection = TextSelection.collapsed(
+        offset: notesController.text.length
+    );
+
+    return TextField(
+      controller: notesController,
+      keyboardType: TextInputType.multiline,
+      maxLines: null,
+      expands: true,
+      decoration: const InputDecoration(hintText: "Notes"),
+      onChanged: (value) => model.notes = value,
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+    );
+  }
+
   Expanded buildRadioButton(String label, FeedType type) {
     return Expanded(
-      child: RadioListTile(
-        title: Text(label, style: radioStyle),
-        value: type,
-        groupValue: event.feedType,
-        onChanged: setFeedType
+      child: Consumer<EditModel>(
+        builder: (context, model, _) {
+          return RadioListTile(
+            title: Text(label, style: radioStyle),
+            value: type,
+            groupValue: model.feedType,
+            onChanged: (type) => model.feedType = type,
+          );
+        },
       ),
     );
   }
