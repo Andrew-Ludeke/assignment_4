@@ -1,6 +1,7 @@
 import 'package:assignment_4/Enums/FeedType.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment_4/Event.dart';
+import 'dart:async' as async;
 
 class EditModel extends ChangeNotifier {
 
@@ -27,7 +28,30 @@ class EditModel extends ChangeNotifier {
   String? get notes => _event.notes;
   set notes(String? notes) {
     _event.notes = notes;
-    print(_event.notes);
     notifyListeners();
   }
+
+  late async.Timer timer;
+
+  EditModel() {
+    timer = async.Timer.periodic(const Duration(seconds: 1), (_) {});
+    timer.cancel();
+  }
+
+  void tick (async.Timer t) {
+    endTime = DateTime.now();
+  }
+
+  void toggleTimer () {
+    if (timer.isActive) {
+      timer.cancel();
+      endTime = DateTime.now();
+    } else {
+      time = DateTime.now();
+      endTime = DateTime.now();
+      timer = async.Timer.periodic(const Duration(seconds: 1), tick);
+    }
+  }
+
+  bool get isTiming => timer.isActive;
 }

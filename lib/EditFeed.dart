@@ -1,9 +1,7 @@
 import 'package:assignment_4/EditModel.dart';
 import 'package:assignment_4/Enums/FeedType.dart';
-import 'package:assignment_4/Event.dart';
 import 'package:assignment_4/TimingContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:assignment_4/Navigation.dart';
 import 'package:provider/provider.dart';
 
 class EditFeed extends StatefulWidget {
