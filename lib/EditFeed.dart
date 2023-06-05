@@ -1,8 +1,10 @@
+import 'package:assignment_4/EditModel.dart';
 import 'package:assignment_4/Enums/FeedType.dart';
 import 'package:assignment_4/Event.dart';
 import 'package:assignment_4/TimingContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment_4/Navigation.dart';
+import 'package:provider/provider.dart';
 
 class EditFeed extends StatefulWidget {
   const EditFeed({super.key});
@@ -27,9 +29,9 @@ class _EditFeedState extends State<EditFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Padding(
+    return ChangeNotifierProvider<EditModel>(
+      create: (context) => EditModel(),
+      child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
