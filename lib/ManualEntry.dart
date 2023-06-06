@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
+
 class ManualEntry extends StatefulWidget {
   const ManualEntry({super.key});
 
@@ -20,12 +21,24 @@ class _ManualEntryState extends State<ManualEntry> {
           TimeEntryRow(
               label: "Start Time",
               buildFunction: (context, model, _)
-                => buildTextField(context, model, getTimeFn, setTimeFn),
+                => buildTextField(
+                    context: context,
+                    model: model,
+                    getTime: (mdl) => mdl.time,
+                    setTime: (mdl, value) => mdl.time = value,
+                    hint: 'enter start time'
+              ),
           ),
           TimeEntryRow(
             label: "End Time",
             buildFunction: (context, model, _)
-              => buildTextField(context, model, getEndTimeFn, setEndTimeFn),
+              => buildTextField(
+                  context: context,
+                  model: model,
+                  getTime: (model) => model.endTime,
+                  setTime: (model, value) => model.endTime = value,
+                  hint: 'enter end time'
+            ),
           ),
         ],
       ),
@@ -33,18 +46,15 @@ class _ManualEntryState extends State<ManualEntry> {
   }
 }
 
-DateTime? getTimeFn(EditModel model) => model.time;
-DateTime? getEndTimeFn(EditModel model) => model.endTime;
-
-void setTimeFn(EditModel model, DateTime? value) => model.time = value;
-void setEndTimeFn(EditModel model, DateTime? value) => model.endTime = value;
-
 TextField buildTextField(
-    BuildContext context,
-    EditModel model,
-    DateTime? Function(EditModel) getTime,
-    void Function(EditModel, DateTime?) setTime
-) {
+    {
+      required BuildContext context,
+      required EditModel model,
+      required DateTime? Function(EditModel) getTime,
+      required void Function(EditModel, DateTime?) setTime,
+      String? hint,
+    }
+    ) {
   TextEditingController controller = TextEditingController();
 
   DateTime? modelTime = getTime(model);
@@ -81,10 +91,11 @@ TextField buildTextField(
 
 class TimeEntryRow extends StatefulWidget {
   const TimeEntryRow({
-    super.key, required this.label, required this.buildFunction,
+    super.key, required this.label, required this.buildFunction, this.hint = '',
   });
 
   final String label;
+  final String hint;
   final Widget Function(BuildContext, EditModel, Widget?) buildFunction;
 
   @override
