@@ -19,84 +19,64 @@ class _ManualEntryState extends State<ManualEntry> {
         children: <Widget>[
           TimeEntryRow(
               label: "Start Time",
-              buildFunction: buildStartTextField,
+              //buildFunction: buildStartTextField,
+              buildFunction: (context, model, _)
+                => buildTextField(context, model, getTimeFn, setTimeFn),
           ),
           TimeEntryRow(
             label: "End Time",
-            buildFunction: buildEndTextField,
+            //buildFunction: buildEndTextField,
+            buildFunction: (context, model, _)
+              => buildTextField(context, model, getEndTimeFn, setEndTimeFn),
           ),
         ],
       ),
     );
   }
+}
 
-  TextField buildStartTextField(BuildContext context, EditModel model, _) {
+DateTime? getTimeFn(EditModel model) => model.time;
+DateTime? getEndTimeFn(EditModel model) => model.endTime;
 
-    TextEditingController controller = TextEditingController();
+void setTimeFn(EditModel model, DateTime? value) => model.time = value;
+void setEndTimeFn(EditModel model, DateTime? value) => model.endTime = value;
 
-    // controller.text = DateFormat.Hms().format(model.time ?? DateTime.now());
-    if (model.time != null) {
-      controller.text = DateFormat.Hms().format(model.time!);
-    }
+TextField buildTextField(BuildContext context, EditModel model,
+  DateTime? Function(EditModel) getTime,
+  void Function(EditModel, DateTime?) setTime
+) {
+  TextEditingController controller = TextEditingController();
 
-    return TextField(
-      controller: controller,
-      readOnly: true,
-      onTap: () async {
-        TimeOfDay? time = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.fromDateTime(model.time ?? DateTime.now())
-        );
+  DateTime? modelTime = getTime(model);
 
-        if (time == null) return;
-
-        DateTime now = DateTime.now();
-        DateTime? date = DateTime(
-          model.time?.year ?? now.year,
-          model.time?.month ?? now.month,
-          model.time?.day ?? now.day,
-          time.hour,
-          time.minute,
-        );
-        model.time = date;
-      },
-      decoration: const InputDecoration(hintText: 'enter start time'),
-    );
+  if (modelTime != null) {
+    controller.text = DateFormat.Hms().format(modelTime!);
   }
 
-  TextField buildEndTextField(BuildContext context, EditModel model, _) {
-    TextEditingController controller = TextEditingController();
-    //controller.text = DateFormat.Hms().format(model.endTime ?? DateTime.now());
+  return TextField(
+    controller: controller,
+    readOnly: true,
+    onTap: () async {
+      TimeOfDay? pickedTime = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.fromDateTime(modelTime ?? DateTime.now())
+      );
 
-    if (model.endTime != null) {
-      controller.text = DateFormat.Hms().format(model.endTime ?? DateTime.now());
-    }
+      if (pickedTime == null) return;
 
-    return TextField(
-      controller: controller,
-      readOnly: true,
-      onTap: () async {
-        TimeOfDay? time = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.fromDateTime(model.endTime ?? DateTime.now())
-        );
+      DateTime now = DateTime.now();
+      DateTime? date = DateTime(
+        modelTime?.year ?? now.year,
+        modelTime?.month ?? now.month,
+        modelTime?.day ?? now.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
 
-        if (time == null) return;
-
-        DateTime now = DateTime.now();
-        DateTime? date = DateTime(
-          model.endTime?.year ?? now.year,
-          model.endTime?.month ?? now.month,
-          model.endTime?.day ?? now.day,
-          time.hour,
-          time.minute,
-        );
-
-        model.endTime = date;
-      },
-      decoration: const InputDecoration(hintText: 'enter end time'),
-    );
-  }
+      setTime(model, date);
+    },
+    decoration: const InputDecoration(hintText: 'enter end time'),
+  );
 }
 
 class TimeEntryRow extends StatefulWidget {
@@ -135,7 +115,7 @@ class _TimeEntryRowState extends State<TimeEntryRow> {
           child: SizedBox(
               width: 200,
             child: Consumer<EditModel>(
-              builder: widget.buildFunction,//buildStartTextField,
+              builder: widget.buildFunction,
             ),
           ),
         ),
