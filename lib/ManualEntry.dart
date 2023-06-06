@@ -19,13 +19,11 @@ class _ManualEntryState extends State<ManualEntry> {
         children: <Widget>[
           TimeEntryRow(
               label: "Start Time",
-              //buildFunction: buildStartTextField,
               buildFunction: (context, model, _)
                 => buildTextField(context, model, getTimeFn, setTimeFn),
           ),
           TimeEntryRow(
             label: "End Time",
-            //buildFunction: buildEndTextField,
             buildFunction: (context, model, _)
               => buildTextField(context, model, getEndTimeFn, setEndTimeFn),
           ),
@@ -41,16 +39,18 @@ DateTime? getEndTimeFn(EditModel model) => model.endTime;
 void setTimeFn(EditModel model, DateTime? value) => model.time = value;
 void setEndTimeFn(EditModel model, DateTime? value) => model.endTime = value;
 
-TextField buildTextField(BuildContext context, EditModel model,
-  DateTime? Function(EditModel) getTime,
-  void Function(EditModel, DateTime?) setTime
+TextField buildTextField(
+    BuildContext context,
+    EditModel model,
+    DateTime? Function(EditModel) getTime,
+    void Function(EditModel, DateTime?) setTime
 ) {
   TextEditingController controller = TextEditingController();
 
   DateTime? modelTime = getTime(model);
 
   if (modelTime != null) {
-    controller.text = DateFormat.Hms().format(modelTime!);
+    controller.text = DateFormat.Hms().format(modelTime);
   }
 
   return TextField(
@@ -113,7 +113,7 @@ class _TimeEntryRowState extends State<TimeEntryRow> {
         Padding(
           padding: const EdgeInsets.only(left: 32.0, right: 32.0),
           child: SizedBox(
-              width: 200,
+            width: 200,
             child: Consumer<EditModel>(
               builder: widget.buildFunction,
             ),
