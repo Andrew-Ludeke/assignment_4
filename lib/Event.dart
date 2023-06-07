@@ -36,4 +36,20 @@ class Event
     this.toiletContents,
     this.imgUri
   });
+
+  @override
+  String toString() {
+    return '''
+    Event(
+      id: ${id ?? 'None'},
+      type: ${type ?? 'None'},
+      time: ${time ?? 'None'},
+      notes: ${notes ?? 'None'},
+      duration: ${duration ?? 'None'},
+      feedType: ${feedType ?? 'None'},
+      toiletContents: ${toiletContents ?? 'None'},
+      imgUri: ${imgUri ?? 'None'},
+    )
+    ''';
+  }
 }

@@ -22,7 +22,7 @@ class _TimelineFlowState extends State<TimelineFlow> {
       initialRoute: TimelineFlowRoutes.ROOT,
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
-            builder: (context) => const Timeline()//const EditFeed()
+            builder: (context) => const Timeline()
         );
       },
     );
