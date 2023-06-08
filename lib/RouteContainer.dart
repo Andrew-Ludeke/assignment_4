@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/Navigation.dart';
-import 'package:assignment_4/HomeFlow.dart';
-import 'package:assignment_4/TimelineFlow.dart';
+import 'package:assignment_4/home/HomeFlow.dart';
+import 'package:assignment_4/timeline/TimelineFlow.dart';
 
 class RouteContainer extends StatefulWidget {
   const RouteContainer({super.key});

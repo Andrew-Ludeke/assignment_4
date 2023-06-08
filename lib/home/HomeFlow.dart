@@ -1,4 +1,4 @@
-import 'package:assignment_4/Home.dart';
+import 'package:assignment_4/home/Home.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:flutter/material.dart';
 

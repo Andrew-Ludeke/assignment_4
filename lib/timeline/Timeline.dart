@@ -1,4 +1,4 @@
-import 'package:assignment_4/Daily.dart';
+import 'package:assignment_4/timeline/Daily.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:flutter/material.dart';
 

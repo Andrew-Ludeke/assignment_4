@@ -1,5 +1,5 @@
 import 'package:assignment_4/model/EditModel.dart';
-import 'package:assignment_4/TimingContainer.dart';
+import 'package:assignment_4/edit/TimingContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:assignment_4/Navigation.dart';

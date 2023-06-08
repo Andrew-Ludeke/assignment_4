@@ -1,24 +1,21 @@
-import 'dart:io';
-
-import 'package:assignment_4/Daily.dart';
-import 'package:assignment_4/DataLabel.dart';
+import 'package:assignment_4/timeline/Daily.dart';
+import 'package:assignment_4/widgets/DataLabel.dart';
 import 'package:assignment_4/model/DetailsModel.dart';
 import 'package:assignment_4/model/EditModel.dart';
-import 'package:assignment_4/EditToilet.dart';
+import 'package:assignment_4/edit/EditSleep.dart';
 import 'package:assignment_4/Navigation.dart';
+import 'package:assignment_4/Utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'Utilities.dart';
-
-class ToiletDetails extends StatefulWidget {
-  const ToiletDetails({super.key});
+class SleepDetails extends StatefulWidget {
+  const SleepDetails({super.key});
 
   @override
-  State<ToiletDetails> createState() => _ToiletDetailsState();
+  State<SleepDetails> createState() => _SleepDetailsState();
 }
 
-class _ToiletDetailsState extends State<ToiletDetails> {
+class _SleepDetailsState extends State<SleepDetails> {
 
   TextStyle labelStyle = const TextStyle(
     fontSize: 24,
@@ -30,23 +27,26 @@ class _ToiletDetailsState extends State<ToiletDetails> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
           children: <Widget> [
-            Align(
-              alignment: Alignment.topRight,
-              child: Consumer<DetailsModel>(
-                builder: (context, model, _) => TextButton(
-                  onPressed: () {
-                    timelineKey.currentState!.push(
-                        MaterialPageRoute(
-                            builder: (context) {
-                              return ChangeNotifierProvider<EditModel>(
-                                  create: (context) => EditModel(event: model.event),
-                                  child: const EditToilet()
-                              );
-                            }
-                        )
-                    );
-                  },
-                  child: const Icon(Icons.edit),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0, right: 16.0, bottom: 32.0),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Consumer<DetailsModel>(
+                  builder: (context, model, _) => TextButton(
+                    onPressed: () {
+                      timelineKey.currentState!.push(
+                          MaterialPageRoute(
+                              builder: (context) {
+                                return ChangeNotifierProvider<EditModel>(
+                                    create: (context) => EditModel(event: model.event),
+                                    child: const EditSleep()
+                                );
+                              }
+                          )
+                      );
+                    },
+                    child: const Icon(Icons.edit),
+                  ),
                 ),
               ),
             ),
@@ -59,7 +59,8 @@ class _ToiletDetailsState extends State<ToiletDetails> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Text('Start Time', style: labelStyle),
-                      Text('Contents', style: labelStyle,),
+                      Text('End Time', style: labelStyle,),
+                      Text('Duration', style: labelStyle,),
                     ],
                   ),
                 ),
@@ -71,24 +72,16 @@ class _ToiletDetailsState extends State<ToiletDetails> {
                       style: labelStyle,
                     ),
                     DataLabel<DetailsModel>(
-                      getValue: (model) => (model.event.toiletContents?.name ?? 'None'),
+                      getValue: (model) => formatTime(model.event.endTime) ?? 'Error',
+                      style: labelStyle,
+                    ),
+                    DataLabel<DetailsModel>(
+                      getValue: (model) => formatDuration(model.duration) ?? 'Error',
                       style: labelStyle,
                     ),
                   ],
                 ),
               ],
-            ),
-            Consumer<DetailsModel>(
-              builder: (context, model, _) {
-                    File? img = model.imgFile;
-                    if (img == null) {
-                      return Image.asset(
-                        'assets/images/placeholder.png', height: 180,
-                      );
-                    }
-
-                    return Image.file(File(img.path));
-              },
             ),
             Expanded(
               child: Padding(

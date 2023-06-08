@@ -1,4 +1,4 @@
-import 'package:assignment_4/Timeline.dart';
+import 'package:assignment_4/timeline/Timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment_4/Navigation.dart';
 

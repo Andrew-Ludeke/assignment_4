@@ -1,7 +1,7 @@
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
 import 'package:flutter/material.dart';
-import 'package:assignment_4/Event.dart';
+import 'package:assignment_4/model/Event.dart';
 import 'dart:async' as async;
 
 import 'package:image_picker/image_picker.dart';

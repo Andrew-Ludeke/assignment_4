@@ -1,7 +1,7 @@
 import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
-import 'package:assignment_4/Event.dart';
+import 'package:assignment_4/model/Event.dart';
 import 'package:flutter/material.dart';
 
 class TimelineModel extends ChangeNotifier {

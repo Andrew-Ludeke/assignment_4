@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:assignment_4/HomeFlow.dart';
-import 'package:assignment_4/Home.dart';
-import 'package:assignment_4/Timeline.dart';
+import 'package:assignment_4/home/HomeFlow.dart';
+import 'package:assignment_4/home/Home.dart';
+import 'package:assignment_4/timeline/Timeline.dart';
 
 final GlobalKey<NavigatorState> homeKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> timelineKey = GlobalKey<NavigatorState>();

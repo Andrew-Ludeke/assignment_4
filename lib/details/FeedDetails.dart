@@ -1,7 +1,7 @@
-import 'package:assignment_4/Daily.dart';
-import 'package:assignment_4/DataLabel.dart';
+import 'package:assignment_4/timeline/Daily.dart';
+import 'package:assignment_4/widgets/DataLabel.dart';
 import 'package:assignment_4/model/DetailsModel.dart';
-import 'package:assignment_4/EditFeed.dart';
+import 'package:assignment_4/edit/EditFeed.dart';
 import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:assignment_4/Utilities.dart';

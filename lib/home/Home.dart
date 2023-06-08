@@ -1,10 +1,10 @@
 import 'package:assignment_4/model/EditModel.dart';
-import 'package:assignment_4/Event.dart';
+import 'package:assignment_4/model/Event.dart';
 import 'package:flutter/material.dart';
-import 'package:assignment_4/EditFeed.dart';
-import 'package:assignment_4/EditSleep.dart';
-import 'package:assignment_4/EditToilet.dart';
-import 'package:assignment_4/RecordButton.dart';
+import 'package:assignment_4/edit/EditFeed.dart';
+import 'package:assignment_4/edit/EditSleep.dart';
+import 'package:assignment_4/edit/EditToilet.dart';
+import 'package:assignment_4/edit/RecordButton.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:provider/provider.dart';
 

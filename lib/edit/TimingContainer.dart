@@ -1,6 +1,6 @@
-import 'package:assignment_4/Event.dart';
-import 'package:assignment_4/ManualEntry.dart';
-import 'package:assignment_4/Timer.dart';
+import 'package:assignment_4/model/Event.dart';
+import 'package:assignment_4/edit/ManualEntry.dart';
+import 'package:assignment_4/edit/Timer.dart';
 import 'package:assignment_4/model/EditModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
