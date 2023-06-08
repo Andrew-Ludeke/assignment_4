@@ -1,4 +1,4 @@
-import 'package:assignment_4/EditModel.dart';
+import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/Event.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment_4/EditFeed.dart';

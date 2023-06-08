@@ -1,8 +1,8 @@
 import 'package:assignment_4/Daily.dart';
 import 'package:assignment_4/DataLabel.dart';
-import 'package:assignment_4/DetailsModel.dart';
+import 'package:assignment_4/model/DetailsModel.dart';
 import 'package:assignment_4/EditFeed.dart';
-import 'package:assignment_4/EditModel.dart';
+import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:assignment_4/Utilities.dart';
 import 'package:flutter/material.dart';

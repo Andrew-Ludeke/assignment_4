@@ -1,5 +1,5 @@
-import 'package:assignment_4/Enums/FeedType.dart';
-import 'package:assignment_4/Enums/ToiletContents.dart';
+import 'package:assignment_4/enum/FeedType.dart';
+import 'package:assignment_4/enum/ToiletContents.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment_4/Event.dart';
 import 'dart:async' as async;

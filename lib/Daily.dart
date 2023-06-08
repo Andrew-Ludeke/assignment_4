@@ -1,12 +1,16 @@
 import 'package:assignment_4/DataLabel.dart';
-import 'package:assignment_4/DetailsModel.dart';
-import 'package:assignment_4/Enums/EventType.dart';
-import 'package:assignment_4/Enums/FeedType.dart';
+import 'package:assignment_4/EditFeed.dart';
+import 'package:assignment_4/EditSleep.dart';
+import 'package:assignment_4/EditToilet.dart';
+import 'package:assignment_4/model/DetailsModel.dart';
+import 'package:assignment_4/enum/EventType.dart';
+import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/Event.dart';
 import 'package:assignment_4/FeedDetails.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:assignment_4/SleepDetails.dart';
-import 'package:assignment_4/TimelineModel.dart';
+import 'package:assignment_4/model/EditModel.dart';
+import 'package:assignment_4/model/TimelineModel.dart';
 import 'package:assignment_4/ToiletDetails.dart';
 import 'package:assignment_4/Utilities.dart';
 import 'package:flutter/material.dart';
@@ -24,117 +28,169 @@ class Daily extends StatefulWidget {
 
 class _DailyState extends State<Daily> {
   bool isVisible = false;
-  bool selectionMode = false;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<TimelineModel>(
       create: (context) => TimelineModel(today: widget.today),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Today\'s Summary', style: TextStyle(fontSize: 24.0)),
-              Consumer<TimelineModel>(
-                builder: (context, model, _) => TextButton(
-                  onPressed: () {
-                    Share.share(model.events.toString());
-                  },
-                  child: const Icon(Icons.share),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Today\'s Summary', style: TextStyle(fontSize: 24.0)),
+                Consumer<TimelineModel>(
+                  builder: (context, model, _) => TextButton(
+                    onPressed: () {
+                      Share.share(model.events.toString());
+                    },
+                    child: const Icon(Icons.share),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const Center(child: Padding(
-            padding: EdgeInsets.all(0.0),
-            child: DailyStats(),
-          )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              const Text('Recorded Events', style: TextStyle(fontSize: 24.0)),
-              Row(
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () => setState(() {
-                      isVisible = !isVisible;
-                    }),
-                    child: const Icon(Icons.filter_alt),
-                  ),
-                  Consumer<TimelineModel>(
-                    builder: (context, model, _) => TextButton(
-                      onPressed: model.selected == 1
-                      ? () {
-                          // TODO: Navigate edit
+              ],
+            ),
+            const Center(child: Padding(
+              padding: EdgeInsets.all(0.0),
+              child: DailyStats(),
+            )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 32.0, bottom: 32.0),
+                  child: Consumer<TimelineModel>(
+                      builder: (context, model, _) {
+                        if (model.selected == 0) {
+                          return const Text('Recorded Events', style: TextStyle(
+                              fontSize: 24.0));
+                        }
+                        return Row(
+                          children: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                model.deselectAll();
+                              },
+                              child: const Icon(Icons.close),
+                            ),
+                            Text(
+                                '${model.selected} Selected',
+                                style: const TextStyle(fontSize: 24.0)
+                            ),
+                          ],
+                        );
                       }
-                      : null,
-                      child: const Icon(Icons.edit),
-                    ),
                   ),
-                  Consumer<TimelineModel>(
-                    builder: (context, model, _) => TextButton(
-                      onPressed: model.selected > 0
+                ),
+                Row(
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: () => setState(() {
+                        isVisible = !isVisible;
+                      }),
+                      child: const Icon(Icons.filter_alt),
+                    ),
+                    Consumer<TimelineModel>(
+                      builder: (context, model, _) => TextButton(
+                        onPressed: model.selected == 1
                         ? () {
-                          // TODO: Delete selection
+                          Event event = model
+                              .eventList.where((item) => item.isSelected)
+                              .first
+                              .event;
+
+                          if (event.type == null) {
+                            // TODO: Toast error
+                            return;
+                          }
+
+                          model.deselectAll();
+
+                          timelineKey.currentState!.push(
+                              MaterialPageRoute(
+                                  builder: (context) {
+                                    return ChangeNotifierProvider<EditModel>(
+                                        create: (context) => EditModel(event: event),
+                                        builder: (context, _) {
+                                          switch(event.type!) {
+                                            case EventType.FEED: return const EditFeed();
+                                            case EventType.SLEEP: return const EditSleep();
+                                            case EventType.TOILET: return const EditToilet();
+                                          }
+                                        }
+                                    );
+                                  }
+                              )
+                          );
+
                         }
                         : null,
-                      child: const Icon(Icons.delete),
+                        child: const Icon(Icons.edit),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Visibility(
-            visible: isVisible,
-            child: Expanded(
-              child: Column(
-                //mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  buildRadioButton<TimelineModel, EventType?>(
-                      label: 'Feed',
-                      value: EventType.FEED,
-                      groupValue: (model) => model.filter,
-                      onChanged: (model, value) => model.filter = value
-                  ),
-                  buildRadioButton<TimelineModel, EventType?>(
-                      label: 'Sleep',
-                      value: EventType.SLEEP,
-                      groupValue: (model) => model.filter,
-                      onChanged: (model, value) => model.filter = value
-                  ),
-                  buildRadioButton<TimelineModel, EventType?>(
-                      label: 'Toilet',
-                      value: EventType.TOILET,
-                      groupValue: (model) => model.filter,
-                      onChanged: (model, value) => model.filter = value
-                  ),
-                  buildRadioButton<TimelineModel, EventType?>(
-                      label: 'None',
-                      value: null,
-                      groupValue: (model) => model.filter,
-                      onChanged: (model, value) => model.filter = value
-                  ),
-                ],
+                    Consumer<TimelineModel>(
+                      builder: (context, model, _) => TextButton(
+                        onPressed: model.selected > 0
+                          ? () {
+                            model.deleteSelection();
+                          }
+                          : null,
+                        child: const Icon(Icons.delete),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Visibility(
+              visible: isVisible,
+              child: Expanded(
+                child: Column(
+                  children: <Widget>[
+                    buildRadioButton<TimelineModel, EventType?>(
+                        label: 'Feed',
+                        value: EventType.FEED,
+                        groupValue: (model) => model.filter,
+                        onChanged: (model, value) => model.filter = value
+                    ),
+                    buildRadioButton<TimelineModel, EventType?>(
+                        label: 'Sleep',
+                        value: EventType.SLEEP,
+                        groupValue: (model) => model.filter,
+                        onChanged: (model, value) => model.filter = value
+                    ),
+                    buildRadioButton<TimelineModel, EventType?>(
+                        label: 'Toilet',
+                        value: EventType.TOILET,
+                        groupValue: (model) => model.filter,
+                        onChanged: (model, value) => model.filter = value
+                    ),
+                    buildRadioButton<TimelineModel, EventType?>(
+                        label: 'None',
+                        value: null,
+                        groupValue: (model) => model.filter,
+                        onChanged: (model, value) => model.filter = value
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: Consumer<TimelineModel>(
-              builder: (context, model, _) => ListView.builder(
-                itemBuilder: (context, index) => buildEventListItem(context, model, index),
-                itemCount: model.eventList.length,
+            Expanded(
+              child: Consumer<TimelineModel>(
+                builder: (context, model, _) => ListView.builder(
+                  itemBuilder: (context, index) => buildEventListItem(context, model, index),
+                  itemCount: model.eventList.length,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       )
     );
   }
 
   Widget? buildEventListItem(BuildContext context, TimelineModel model, int index) {
-    //Event event = model.eventList[index];
     EventListItem item = model.eventList[index];
     Event event = item.event;
 
@@ -144,38 +200,26 @@ class _DailyState extends State<Daily> {
         tileColor: item.isSelected? Colors.black12 : Colors.white12,
         onTap: () {
           if (model.selected == 0) {
-            switch(event.type) {
-              case EventType.FEED:
-                timelineKey.currentState!.push(
-                    MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider<DetailsModel>(
-                            create: (context) => DetailsModel(event: event),
-                            child: const FeedDetails()
-                        )
-                    )
-                );
-              case EventType.SLEEP:
-                timelineKey.currentState!.push(
-                    MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider<DetailsModel>(
-                            create: (context) => DetailsModel(event: event),
-                            child: const SleepDetails()
-                        )
-                    )
-                );
-              case EventType.TOILET:
-              timelineKey.currentState!.push(
-                  MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider<DetailsModel>(
-                          create: (context) => DetailsModel(event: event),
-                          child: const ToiletDetails()
-                      )
-                  )
-              );
-              default:
-                // TODO: Display "data corrupt" toast
-                break;
+
+            EventType? type = event.type;
+            if (type == null) {
+              // TODO: toast error
+              return;
             }
+            timelineKey.currentState!.push(
+                MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider<DetailsModel>(
+                        create: (context) => DetailsModel(event: event),
+                        builder: (context, _) {
+                          switch (type) {
+                            case EventType.FEED: return const FeedDetails();
+                            case EventType.SLEEP: return const SleepDetails();
+                            case EventType.TOILET: return const ToiletDetails();
+                          }
+                        }
+                    )
+                )
+            );
           } else {
             model.toggleSelect(item);
           }
@@ -200,16 +244,14 @@ class _DailyState extends State<Daily> {
     required String label,
     required U value,
     required U Function(T) groupValue,
-    required void Function(T, U?)? onChanged
+    required void Function(T, U?)? onChanged,
+    TextStyle? style,
   }) {
-
-    const TextStyle radioStyle = TextStyle();//TextStyle(fontSize: 9.0);
-
     return Expanded(
       child: Consumer<T>(
         builder: (context, model, _) {
           return RadioListTile(
-            title: Text(label, style: radioStyle),
+            title: Text(label, style: style),
             value: value,
             groupValue: groupValue(model),
             onChanged: (value) {

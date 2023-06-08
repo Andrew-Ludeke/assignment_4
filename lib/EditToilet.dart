@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:assignment_4/EditModel.dart';
-import 'package:assignment_4/Enums/ToiletContents.dart';
+import 'package:assignment_4/model/EditModel.dart';
+import 'package:assignment_4/enum/ToiletContents.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';

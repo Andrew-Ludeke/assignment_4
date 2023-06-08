@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:assignment_4/Enums/FeedType.dart';
+import 'package:assignment_4/enum/EventType.dart';
+import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/Event.dart';
 import 'package:flutter/material.dart';
 
-import 'Enums/EventType.dart';
 
 class DetailsModel extends ChangeNotifier {
   final Event _event;

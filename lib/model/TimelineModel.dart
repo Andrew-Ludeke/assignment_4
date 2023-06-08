@@ -1,6 +1,6 @@
-import 'package:assignment_4/Enums/EventType.dart';
-import 'package:assignment_4/Enums/FeedType.dart';
-import 'package:assignment_4/Enums/ToiletContents.dart';
+import 'package:assignment_4/enum/EventType.dart';
+import 'package:assignment_4/enum/FeedType.dart';
+import 'package:assignment_4/enum/ToiletContents.dart';
 import 'package:assignment_4/Event.dart';
 import 'package:flutter/material.dart';
 
@@ -84,6 +84,26 @@ class TimelineModel extends ChangeNotifier {
   int get wetAndDirty => _events
       .where((event) => event.toiletContents == ToiletContents.WET_AND_DIRTY)
       .length;
+
+  void deselectAll() {
+    for (EventListItem item in _eventList) {
+      item.isSelected = false;
+    }
+    notifyListeners();
+  }
+
+  void deleteSelection() {
+    for (EventListItem item in _eventList.where((item) => item.isSelected)) {
+      Event event = item.event;
+      if (!_eventList.remove(item)) continue;
+      if (!_events.remove(event)) continue;
+      deleteEvent(event);
+    }
+  }
+
+  bool deleteEvent(Event event) {
+    return false;
+  }
 }
 
 class EventListItem {

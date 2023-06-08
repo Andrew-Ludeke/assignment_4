@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:assignment_4/EditModel.dart';
+import 'package:assignment_4/model/EditModel.dart';
 
 
 class Timer extends StatefulWidget {
