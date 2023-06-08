@@ -26,155 +26,152 @@ class _EditToiletState extends State<EditToilet> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<EditModel>(
-      create: (context) => EditModel(),
-      builder: (context, _) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TimeEntryRow(
-              label: "Time",
-              buildFunction: (context, model, _) => buildTextField(
-                  context: context,
-                  model: model,
-                  getTime: (mdl) => mdl.time,
-                  setTime: (mdl, value) => mdl.time = value,
-                  hint: 'enter time'
-              ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          TimeEntryRow(
+            label: "Time",
+            buildFunction: (context, model, _) => buildTextField(
+                context: context,
+                model: model,
+                getTime: (mdl) => mdl.time,
+                setTime: (mdl, value) => mdl.time = value,
+                hint: 'enter time'
             ),
-            Expanded(
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Positioned.fill(
-                    child: Consumer<EditModel>(
-                      builder: (context, model, _) => buildImage(model),
-                    ),
-                  ),
-                  Positioned(
-                    right: 10,
-                    top: 10,
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: toggleVisibility,
-                          child: const Icon(Icons.add),
-                        ),
-                        Visibility(
-                          visible: isVisible,
-                          child: Column(
-                            children: [
-                              ElevatedButton(
-                                onPressed: () async {
-                                  Future<XFile?> pickImage() async {
-                                    ImagePicker picker = ImagePicker();
-                                    XFile? img = await picker.pickImage(source: ImageSource.gallery);
-                                    return img;
-                                  }
-                                  EditModel model = Provider.of<EditModel>(context, listen: false);
-                                  model.img = await pickImage();
-                                },
-                                child: const Icon(Icons.folder),
-                              ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  Future<XFile?> pickImage() async {
-                                    ImagePicker picker = ImagePicker();
-                                    return await picker.pickImage(source: ImageSource.camera);
-                                  }
-                                  EditModel model = Provider.of<EditModel>(context, listen: false);
-                                  model.img = await pickImage();
-                                },
-                                child: const Icon(Icons.camera),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  EditModel model = Provider.of<EditModel>(context, listen: false);
-                                  model.img = null;
-                                },
-                                child: const Icon(Icons.delete),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            const Align(
-              alignment: Alignment.bottomLeft,
-              child: Text('Contents', style: TextStyle(fontSize: 24.0)),
-            ),
-            Row(
+          ),
+          Expanded(
+            child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                buildCheckBox(
-                  label: 'Wet',
-                  checkedWhen: (model) =>
-                  model.toiletContents == ToiletContents.WET
-                      ||  model.toiletContents == ToiletContents.WET_AND_DIRTY,
-                  onChanged: (model, value) {
-                    if (value == null) return;
-
-                    switch(model.toiletContents) {
-                      case ToiletContents.WET:
-                        model.toiletContents = ToiletContents.EMPTY;
-                      case ToiletContents.DIRTY:
-                        model.toiletContents = ToiletContents.WET_AND_DIRTY;
-                      case ToiletContents.WET_AND_DIRTY:
-                        model.toiletContents = ToiletContents.DIRTY;
-                      default:
-                        model.toiletContents = ToiletContents.WET;
-                    }
-                  },
+                Positioned.fill(
+                  child: Consumer<EditModel>(
+                    builder: (context, model, _) => buildImage(model),
+                  ),
                 ),
-                buildCheckBox(
-                  label: 'Dirty',
-                  checkedWhen: (model) =>
-                  model.toiletContents == ToiletContents.DIRTY
-                      ||  model.toiletContents == ToiletContents.WET_AND_DIRTY,
-                  onChanged: (model, value) {
-                    if (value == null) return;
-
-                    switch(model.toiletContents) {
-                      case ToiletContents.WET:
-                        model.toiletContents = ToiletContents.WET_AND_DIRTY;
-                      case ToiletContents.DIRTY:
-                        model.toiletContents = ToiletContents.EMPTY;
-                      case ToiletContents.WET_AND_DIRTY:
-                        model.toiletContents = ToiletContents.WET;
-                      default:
-                        model.toiletContents = ToiletContents.DIRTY;
-                    }
-                  },
-                ),
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: toggleVisibility,
+                        child: const Icon(Icons.add),
+                      ),
+                      Visibility(
+                        visible: isVisible,
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                Future<XFile?> pickImage() async {
+                                  ImagePicker picker = ImagePicker();
+                                  XFile? img = await picker.pickImage(source: ImageSource.gallery);
+                                  return img;
+                                }
+                                EditModel model = Provider.of<EditModel>(context, listen: false);
+                                model.img = await pickImage();
+                              },
+                              child: const Icon(Icons.folder),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                Future<XFile?> pickImage() async {
+                                  ImagePicker picker = ImagePicker();
+                                  return await picker.pickImage(source: ImageSource.camera);
+                                }
+                                EditModel model = Provider.of<EditModel>(context, listen: false);
+                                model.img = await pickImage();
+                              },
+                              child: const Icon(Icons.camera),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                EditModel model = Provider.of<EditModel>(context, listen: false);
+                                model.img = null;
+                              },
+                              child: const Icon(Icons.delete),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
-            Expanded(
-              child: Consumer<EditModel>(
-                  builder: buildNotes
+          ),
+          const Align(
+            alignment: Alignment.bottomLeft,
+            child: Text('Contents', style: TextStyle(fontSize: 24.0)),
+          ),
+          Row(
+            children: [
+              buildCheckBox(
+                label: 'Wet',
+                checkedWhen: (model) =>
+                model.toiletContents == ToiletContents.WET
+                    ||  model.toiletContents == ToiletContents.WET_AND_DIRTY,
+                onChanged: (model, value) {
+                  if (value == null) return;
+
+                  switch(model.toiletContents) {
+                    case ToiletContents.WET:
+                      model.toiletContents = ToiletContents.EMPTY;
+                    case ToiletContents.DIRTY:
+                      model.toiletContents = ToiletContents.WET_AND_DIRTY;
+                    case ToiletContents.WET_AND_DIRTY:
+                      model.toiletContents = ToiletContents.DIRTY;
+                    default:
+                      model.toiletContents = ToiletContents.WET;
+                  }
+                },
               ),
+              buildCheckBox(
+                label: 'Dirty',
+                checkedWhen: (model) =>
+                model.toiletContents == ToiletContents.DIRTY
+                    ||  model.toiletContents == ToiletContents.WET_AND_DIRTY,
+                onChanged: (model, value) {
+                  if (value == null) return;
+
+                  switch(model.toiletContents) {
+                    case ToiletContents.WET:
+                      model.toiletContents = ToiletContents.WET_AND_DIRTY;
+                    case ToiletContents.DIRTY:
+                      model.toiletContents = ToiletContents.EMPTY;
+                    case ToiletContents.WET_AND_DIRTY:
+                      model.toiletContents = ToiletContents.WET;
+                    default:
+                      model.toiletContents = ToiletContents.DIRTY;
+                  }
+                },
+              ),
+            ],
+          ),
+          Expanded(
+            child: Consumer<EditModel>(
+                builder: buildNotes
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Consumer<EditModel>(
-                  builder: (context, model, _) => ElevatedButton(
-                      onPressed: () => confirmDiscard(context),
-                      child: const Text('Discard')
-                  ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Consumer<EditModel>(
+                builder: (context, model, _) => ElevatedButton(
+                    onPressed: () => confirmDiscard(context),
+                    child: const Text('Discard')
                 ),
-                Consumer<EditModel>(
-                  builder: (context, model, _) => ElevatedButton(
-                      onPressed: () => confirmSave(context),
-                      child: const Text('Save')
-                  ),
+              ),
+              Consumer<EditModel>(
+                builder: (context, model, _) => ElevatedButton(
+                    onPressed: () => confirmSave(context),
+                    child: const Text('Save')
                 ),
-              ],
-            )
-          ],
-        ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
@@ -266,19 +263,12 @@ class _EditToiletState extends State<EditToilet> {
     TextButton confirmButton = TextButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pop();
-          model.persist().then( (didSave) {
-            if (didSave) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Event saved!"),
-                duration: Duration(seconds: 2),
-              ));
-              homeKey.currentState?.pop();
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("ERROR: Failed to save event!"),
-                duration: Duration(seconds: 2),
-              ));
-            }
+          model.persist().then( (_) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Event saved!"),
+              duration: Duration(seconds: 2),
+            ));
+            homeKey.currentState?.pop();
           });
         },
         child: const Text('Save')

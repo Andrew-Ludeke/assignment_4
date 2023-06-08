@@ -1,8 +1,15 @@
 import 'package:assignment_4/RouteContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:assignment_4/home/Home.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  var app = await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const BabyTrackerApp());
 }
 

@@ -1,6 +1,7 @@
 import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Event
 {
@@ -36,6 +37,27 @@ class Event
     this.toiletContents,
     this.imgUri
   });
+
+  Event.fromJson(Map<String, dynamic> json):
+        id = json['id'],
+        type = EventType.fromJson(json['type']),
+        time = json['time'] == null ? null : DateTime.parse(json['time'].toDate().toString()),
+        notes = json['notes'],
+        duration = json['duration'],
+        feedType = FeedType.fromJson(json['feedType']),
+        toiletContents = ToiletContents.fromJson(json['toiletContents']),
+        imgUri = json['imgUri'];
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'type': type?.toJson(),
+    'time': time == null ? null : Timestamp.fromDate(time!),
+    'notes': notes,
+    'duration': duration,
+    'feedType': feedType?.toJson(),
+    'toiletContents': toiletContents?.toJson(),
+    'imgUri': imgUri,
+  };
 
   @override
   String toString() {

@@ -130,19 +130,12 @@ class _EditFeedState extends State<EditFeed> {
     TextButton confirmButton = TextButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pop();
-          model.persist().then( (didSave) {
-            if (didSave) {
+          model.persist().then( (_) {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text("Event saved!"),
                 duration: Duration(seconds: 2),
               ));
               homeKey.currentState?.pop();
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("ERROR: Failed to save event!"),
-                duration: Duration(seconds: 2),
-              ));
-            }
           });
         },
         child: const Text('Save')

@@ -1,3 +1,4 @@
+import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/model/Event.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _HomeState extends State<Home> {
           onPressed: () {
             homeKey.currentState!.push(MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
-                create: (context) => EditModel(event: Event()),
+                create: (context) => EditModel(event: Event(type: EventType.FEED)),
                 child: const EditFeed()
               );
             }));
@@ -42,7 +43,7 @@ class _HomeState extends State<Home> {
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
-                  create: (context) => EditModel(event: Event()),
+                  create: (context) => EditModel(event: Event(type: EventType.SLEEP)),
                   child: const EditSleep()
               );
             }));
@@ -53,7 +54,10 @@ class _HomeState extends State<Home> {
           message: "Time since last toilet event:",
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const EditToilet();
+              return ChangeNotifierProvider<EditModel>(
+                  create: (context) => EditModel(event: Event(type: EventType.TOILET)),
+                  child: const EditToilet()
+              );
             }));
           },
         ),

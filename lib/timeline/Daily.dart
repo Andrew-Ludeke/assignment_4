@@ -31,162 +31,159 @@ class _DailyState extends State<Daily> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TimelineModel>(
-      create: (context) => TimelineModel(today: widget.today),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Today\'s Summary', style: TextStyle(fontSize: 24.0)),
-                Consumer<TimelineModel>(
-                  builder: (context, model, _) => TextButton(
-                    onPressed: () {
-                      Share.share(model.events.toString());
-                    },
-                    child: const Icon(Icons.share),
-                  ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Today\'s Summary', style: TextStyle(fontSize: 24.0)),
+              Consumer<TimelineModel>(
+                builder: (context, model, _) => TextButton(
+                  onPressed: () {
+                    Share.share(model.events.toString());
+                  },
+                  child: const Icon(Icons.share),
                 ),
-              ],
-            ),
-            const Center(child: Padding(
-              padding: EdgeInsets.all(0.0),
-              child: DailyStats(),
-            )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 32.0, bottom: 32.0),
-                  child: Consumer<TimelineModel>(
-                      builder: (context, model, _) {
-                        if (model.selected == 0) {
-                          return const Text('Recorded Events', style: TextStyle(
-                              fontSize: 24.0));
-                        }
-                        return Row(
-                          children: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                model.deselectAll();
-                              },
-                              child: const Icon(Icons.close),
-                            ),
-                            Text(
-                                '${model.selected} Selected',
-                                style: const TextStyle(fontSize: 24.0)
-                            ),
-                          ],
-                        );
+              ),
+            ],
+          ),
+          const Center(child: Padding(
+            padding: EdgeInsets.all(0.0),
+            child: DailyStats(),
+          )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 32.0, bottom: 32.0),
+                child: Consumer<TimelineModel>(
+                    builder: (context, model, _) {
+                      if (model.selected == 0) {
+                        return const Text('Recorded Events', style: TextStyle(
+                            fontSize: 24.0));
                       }
-                  ),
+                      return Row(
+                        children: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              model.deselectAll();
+                            },
+                            child: const Icon(Icons.close),
+                          ),
+                          Text(
+                              '${model.selected} Selected',
+                              style: const TextStyle(fontSize: 24.0)
+                          ),
+                        ],
+                      );
+                    }
                 ),
-                Row(
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: () => setState(() {
-                        isVisible = !isVisible;
-                      }),
-                      child: const Icon(Icons.filter_alt),
-                    ),
-                    Consumer<TimelineModel>(
-                      builder: (context, model, _) => TextButton(
-                        onPressed: model.selected == 1
-                        ? () {
-                          Event event = model
-                              .eventList.where((item) => item.isSelected)
-                              .first
-                              .event;
+              ),
+              Row(
+                children: <Widget>[
+                  TextButton(
+                    onPressed: () => setState(() {
+                      isVisible = !isVisible;
+                    }),
+                    child: const Icon(Icons.filter_alt),
+                  ),
+                  Consumer<TimelineModel>(
+                    builder: (context, model, _) => TextButton(
+                      onPressed: model.selected == 1
+                      ? () {
+                        Event event = model
+                            .eventList.where((item) => item.isSelected)
+                            .first
+                            .event;
 
-                          if (event.type == null) {
-                            // TODO: Toast error
-                            return;
-                          }
+                        if (event.type == null) {
+                          // TODO: Toast error
+                          return;
+                        }
 
-                          model.deselectAll();
+                        model.deselectAll();
 
-                          timelineKey.currentState!.push(
-                              MaterialPageRoute(
-                                  builder: (context) {
-                                    return ChangeNotifierProvider<EditModel>(
-                                        create: (context) => EditModel(event: event),
-                                        builder: (context, _) {
-                                          switch(event.type!) {
-                                            case EventType.FEED: return const EditFeed();
-                                            case EventType.SLEEP: return const EditSleep();
-                                            case EventType.TOILET: return const EditToilet();
-                                          }
+                        timelineKey.currentState!.push(
+                            MaterialPageRoute(
+                                builder: (context) {
+                                  return ChangeNotifierProvider<EditModel>(
+                                      create: (context) => EditModel(event: event),
+                                      builder: (context, _) {
+                                        switch(event.type!) {
+                                          case EventType.FEED: return const EditFeed();
+                                          case EventType.SLEEP: return const EditSleep();
+                                          case EventType.TOILET: return const EditToilet();
                                         }
-                                    );
-                                  }
-                              )
-                          );
+                                      }
+                                  );
+                                }
+                            )
+                        );
 
+                      }
+                      : null,
+                      child: const Icon(Icons.edit),
+                    ),
+                  ),
+                  Consumer<TimelineModel>(
+                    builder: (context, model, _) => TextButton(
+                      onPressed: model.selected > 0
+                        ? () {
+                          model.deleteSelection();
                         }
                         : null,
-                        child: const Icon(Icons.edit),
-                      ),
+                      child: const Icon(Icons.delete),
                     ),
-                    Consumer<TimelineModel>(
-                      builder: (context, model, _) => TextButton(
-                        onPressed: model.selected > 0
-                          ? () {
-                            model.deleteSelection();
-                          }
-                          : null,
-                        child: const Icon(Icons.delete),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Visibility(
-              visible: isVisible,
-              child: Expanded(
-                child: Column(
-                  children: <Widget>[
-                    buildRadioButton<TimelineModel, EventType?>(
-                        label: 'Feed',
-                        value: EventType.FEED,
-                        groupValue: (model) => model.filter,
-                        onChanged: (model, value) => model.filter = value
-                    ),
-                    buildRadioButton<TimelineModel, EventType?>(
-                        label: 'Sleep',
-                        value: EventType.SLEEP,
-                        groupValue: (model) => model.filter,
-                        onChanged: (model, value) => model.filter = value
-                    ),
-                    buildRadioButton<TimelineModel, EventType?>(
-                        label: 'Toilet',
-                        value: EventType.TOILET,
-                        groupValue: (model) => model.filter,
-                        onChanged: (model, value) => model.filter = value
-                    ),
-                    buildRadioButton<TimelineModel, EventType?>(
-                        label: 'None',
-                        value: null,
-                        groupValue: (model) => model.filter,
-                        onChanged: (model, value) => model.filter = value
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Visibility(
+            visible: isVisible,
+            child: Expanded(
+              child: Column(
+                children: <Widget>[
+                  buildRadioButton<TimelineModel, EventType?>(
+                      label: 'Feed',
+                      value: EventType.FEED,
+                      groupValue: (model) => model.filter,
+                      onChanged: (model, value) => model.filter = value
+                  ),
+                  buildRadioButton<TimelineModel, EventType?>(
+                      label: 'Sleep',
+                      value: EventType.SLEEP,
+                      groupValue: (model) => model.filter,
+                      onChanged: (model, value) => model.filter = value
+                  ),
+                  buildRadioButton<TimelineModel, EventType?>(
+                      label: 'Toilet',
+                      value: EventType.TOILET,
+                      groupValue: (model) => model.filter,
+                      onChanged: (model, value) => model.filter = value
+                  ),
+                  buildRadioButton<TimelineModel, EventType?>(
+                      label: 'None',
+                      value: null,
+                      groupValue: (model) => model.filter,
+                      onChanged: (model, value) => model.filter = value
+                  ),
+                ],
               ),
             ),
-            Expanded(
-              child: Consumer<TimelineModel>(
-                builder: (context, model, _) => ListView.builder(
-                  itemBuilder: (context, index) => buildEventListItem(context, model, index),
-                  itemCount: model.eventList.length,
-                ),
+          ),
+          Expanded(
+            child: Consumer<TimelineModel>(
+              builder: (context, model, _) => ListView.builder(
+                itemBuilder: (context, index) => buildEventListItem(context, model, index),
+                itemCount: model.eventList.length,
               ),
             ),
-          ],
-        ),
-      )
+          ),
+        ],
+      ),
     );
   }
 
@@ -196,45 +193,48 @@ class _DailyState extends State<Daily> {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        tileColor: item.isSelected? Colors.black12 : Colors.white12,
-        onTap: () {
-          if (model.selected == 0) {
+      child: Card(
+        color: item.isSelected? const Color(0xffd3bbff): Colors.white,
+        child: ListTile(
+          tileColor: Colors.transparent,
+          onTap: () {
+            if (model.selected == 0) {
 
-            EventType? type = event.type;
-            if (type == null) {
-              // TODO: toast error
-              return;
-            }
-            timelineKey.currentState!.push(
-                MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider<DetailsModel>(
-                        create: (context) => DetailsModel(event: event),
-                        builder: (context, _) {
-                          switch (type) {
-                            case EventType.FEED: return const FeedDetails();
-                            case EventType.SLEEP: return const SleepDetails();
-                            case EventType.TOILET: return const ToiletDetails();
+              EventType? type = event.type;
+              if (type == null) {
+                // TODO: toast error
+                return;
+              }
+              timelineKey.currentState!.push(
+                  MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider<DetailsModel>(
+                          create: (context) => DetailsModel(event: event),
+                          builder: (context, _) {
+                            switch (type) {
+                              case EventType.FEED: return const FeedDetails();
+                              case EventType.SLEEP: return const SleepDetails();
+                              case EventType.TOILET: return const ToiletDetails();
+                            }
                           }
-                        }
-                    )
-                )
-            );
-          } else {
+                      )
+                  )
+              );
+            } else {
+              model.toggleSelect(item);
+            }
+          },
+          onLongPress: () {
             model.toggleSelect(item);
-          }
-        },
-        onLongPress: () {
-          model.toggleSelect(item);
-        },
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(formatTime(event.time) ?? 'Error'),
-            Text(event.type?.name ?? 'Error'),
-            Text(formatInt(event.duration) ?? ''),
-            const Icon(Icons.arrow_forward_ios),
-          ],
+          },
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(formatTime(event.time) ?? 'Error'),
+              Text(event.type?.name ?? 'Error'),
+              Text(formatInt(event.duration) ?? ''),
+              const Icon(Icons.arrow_forward_ios),
+            ],
+          ),
         ),
       ),
     );

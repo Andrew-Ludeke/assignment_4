@@ -1,10 +1,13 @@
 enum FeedType
 {
-  LEFT(name: "Left"),
-  RIGHT(name: "Right"),
-  BOTTLE(name: "Bottle");
+  LEFT(description: "Left"),
+  RIGHT(description: "Right"),
+  BOTTLE(description: "Bottle");
 
-  final String name;
+  final String description;
 
-  const FeedType({required this.name});
+  const FeedType({required this.description});
+
+  static FeedType? fromJson(String? json) => json == null ? null : values.byName(json);
+  String toJson() => name;
 }

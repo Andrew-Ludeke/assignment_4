@@ -1,6 +1,8 @@
+import 'package:assignment_4/model/TimelineModel.dart';
 import 'package:assignment_4/timeline/Daily.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class Timeline extends StatefulWidget {
@@ -18,16 +20,22 @@ class _TimelineState extends State<Timeline> {
 
   Widget buildCalendar(BuildContext context) {
     DateTime today = DateTime.now();
+    today = DateTime(today.year, today.month, today.day);
     int nextMonth = (today.month + 1) % 12;
     int nextYear = nextMonth == 1 ? today.year + 1 : today.year;
 
     return CalendarDatePicker(
         initialDate: today,
-        firstDate: DateTime(today.year, today.month, 1),
-        lastDate: DateTime(nextYear, nextMonth, 1),
+        //firstDate: DateTime(today.year, today.month, 1),
+        //lastDate: DateTime(nextYear, nextMonth, 1),
+        firstDate: DateTime(1970, 1, 1),
+        lastDate: DateTime(2999, 12, 1),
         onDateChanged: (value) {
           timelineKey.currentState!.push(MaterialPageRoute(builder: (context) {
-            return Daily(today: value);
+            return ChangeNotifierProvider<TimelineModel>(
+              create: (context) => TimelineModel(today: value),
+              child: Daily(today: value),
+            );
           }));
         },
     );

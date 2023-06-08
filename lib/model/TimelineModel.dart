@@ -2,6 +2,7 @@ import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
 import 'package:assignment_4/model/Event.dart';
+import 'package:assignment_4/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 
 class TimelineModel extends ChangeNotifier {
@@ -10,9 +11,12 @@ class TimelineModel extends ChangeNotifier {
   late List<Event> _events;
   EventType? _filter;
   late List<EventListItem> _eventList;
+  final EventRepository _eventRepo = EventRepository();
 
   TimelineModel({required DateTime today}) : _today = today {
-    _events = <Event>[
+    _events = <Event>[];
+    _eventList = <EventListItem>[];
+    /*
       Event(
         type: EventType.FEED,
         time: DateTime(2023, 6, 7, 12, 30, 12),
@@ -31,7 +35,14 @@ class TimelineModel extends ChangeNotifier {
         toiletContents: ToiletContents.WET_AND_DIRTY,
       ),
     ];
-    _eventList = _events.map((e) => EventListItem(event: e, isSelected: false)).toList();
+    */
+    getEventList().then(
+        (_) {
+          print(_eventList);
+          eventList = _events.map((e) => EventListItem(event: e, isSelected: false)).toList();
+          //notifyListeners();
+        }
+    );
   }
 
   int _totalFeedDuration(FeedType type) => _events
@@ -57,6 +68,10 @@ class TimelineModel extends ChangeNotifier {
   List<EventListItem> get eventList => _eventList
       .where((item) => _filter == null ? true : item.event.type == _filter)
       .toList();
+  set eventList(value) {
+    _eventList = value;
+    notifyListeners();
+  }
   /*
   List<Event> get eventList => _events
       .where((element) => _filter == null ? true : element.type == _filter)
@@ -99,11 +114,23 @@ class TimelineModel extends ChangeNotifier {
       if (!_events.remove(event)) continue;
       deleteEvent(event);
     }
+    notifyListeners();
   }
 
   bool deleteEvent(Event event) {
     return false;
   }
+
+  Future<void> getEventList() async {
+    _events = await _eventRepo.getForDay(_today);
+    notifyListeners();
+  }
+
+  /*
+  Future<void> saveEvent(Event event) async {
+    return await _eventRepo.persist(event);
+  }
+  */
 }
 
 class EventListItem {

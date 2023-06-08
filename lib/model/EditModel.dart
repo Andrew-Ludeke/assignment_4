@@ -1,5 +1,6 @@
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
+import 'package:assignment_4/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment_4/model/Event.dart';
 import 'dart:async' as async;
@@ -11,6 +12,7 @@ class EditModel extends ChangeNotifier {
   late Event _event;
   late async.Timer _timer;
   XFile? _img;
+  final EventRepository _eventRepo = EventRepository();
 
   EditModel({Event? event}): _event = event ?? Event() {
     _timer = async.Timer.periodic(const Duration(seconds: 1), (_) {});
@@ -67,8 +69,9 @@ class EditModel extends ChangeNotifier {
 
   bool get isTiming => _timer.isActive;
 
-  Future<bool> persist() async {
-    return await Future<bool>.delayed(const Duration(seconds: 1), () => true);
+  Future<void> persist() async {
+    //return await Future<bool>.delayed(const Duration(seconds: 1), () => true);
+    return await _eventRepo.persist(_event);
   }
 
   XFile? get img => _img;

@@ -1,11 +1,14 @@
 enum ToiletContents
 {
-  EMPTY(name: 'Empty'),
-  WET(name: 'Wet'),
-  DIRTY(name: 'Dirty'),
-  WET_AND_DIRTY(name: 'Wet+Dirty');
+  EMPTY(description: 'Empty'),
+  WET(description: 'Wet'),
+  DIRTY(description: 'Dirty'),
+  WET_AND_DIRTY(description: 'Wet+Dirty');
 
-  const ToiletContents({required this.name});
+  const ToiletContents({required this.description});
 
-  final String name;
+  final String description;
+
+  static ToiletContents? fromJson(String? json) => json == null ? null : values.byName(json);
+  String toJson() => name;
 }
