@@ -18,48 +18,45 @@ class _EditFeedState extends State<EditFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<EditModel>(
-      create: (context) => EditModel(),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const TimingContainer(),
-            const Align(
-              alignment: Alignment.bottomLeft,
-              child: Text('Feed Type', style: TextStyle(fontSize: 24.0)),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          const TimingContainer(),
+          const Align(
+            alignment: Alignment.bottomLeft,
+            child: Text('Feed Type', style: TextStyle(fontSize: 24.0)),
+          ),
+          Row(
+            children: [
+              buildRadioButton('Left', FeedType.LEFT),
+              buildRadioButton('Right', FeedType.RIGHT),
+              buildRadioButton('Bottle', FeedType.BOTTLE),
+            ],
+          ),
+          Expanded(
+            child: Consumer<EditModel>(
+                builder: buildNotes
             ),
-            Row(
-              children: [
-                buildRadioButton('Left', FeedType.LEFT),
-                buildRadioButton('Right', FeedType.RIGHT),
-                buildRadioButton('Bottle', FeedType.BOTTLE),
-              ],
-            ),
-            Expanded(
-              child: Consumer<EditModel>(
-                  builder: buildNotes
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Consumer<EditModel>(
+                builder: (context, model, _) => ElevatedButton(
+                    onPressed: () => confirmDiscard(context),
+                    child: const Text('Discard')
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Consumer<EditModel>(
-                  builder: (context, model, _) => ElevatedButton(
-                      onPressed: () => confirmDiscard(context),
-                      child: const Text('Discard')
-                  ),
+              Consumer<EditModel>(
+                builder: (context, model, _) => ElevatedButton(
+                    onPressed: () => confirmSave(context),
+                    child: const Text('Save')
                 ),
-                Consumer<EditModel>(
-                  builder: (context, model, _) => ElevatedButton(
-                      onPressed: () => confirmSave(context),
-                      child: const Text('Save')
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

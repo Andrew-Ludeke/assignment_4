@@ -1,5 +1,6 @@
 import 'package:assignment_4/Enums/EventType.dart';
 import 'package:assignment_4/Enums/FeedType.dart';
+import 'package:assignment_4/Enums/ToiletContents.dart';
 import 'package:assignment_4/Event.dart';
 import 'package:flutter/material.dart';
 
@@ -8,35 +9,44 @@ class TimelineModel extends ChangeNotifier {
   final DateTime _today;
   late List<Event> _events;
   EventType? _filter;
-  //late Map<Event, bool> _eventList;
-  //List<EventListItem> _eventList = <EventListItem>[];
   late List<EventListItem> _eventList;
 
   TimelineModel({required DateTime today}) : _today = today {
     _events = <Event>[
       Event(
-          time: DateTime(2023, 6, 7, 12, 30, 12),
-          type: EventType.FEED,
-          duration: const Duration(minutes: 10).inMilliseconds
+        type: EventType.FEED,
+        time: DateTime(2023, 6, 7, 12, 30, 12),
+        duration: const Duration(minutes: 10).inMilliseconds,
+        feedType: FeedType.BOTTLE,
       ),
       Event(
-          time: DateTime(2023, 6, 7, 14, 12, 46),
-          type: EventType.SLEEP,
-          duration: const Duration(hours: 1, minutes: 23, seconds: 41).inMilliseconds
+        type: EventType.SLEEP,
+        time: DateTime(2023, 6, 7, 14, 12, 46),
+        duration: const Duration(hours: 1, minutes: 23, seconds: 41).inMilliseconds,
+      ),
+      Event(
+        type: EventType.TOILET,
+        time: DateTime(2023, 6, 7, 17, 00, 00),
+        duration: const Duration(minutes: 10).inMilliseconds,
+        toiletContents: ToiletContents.WET_AND_DIRTY,
       ),
     ];
-    //_eventList = <EventListItem>[];
-    //_events.map((e) => _eventList.add(EventListItem(event: e, isSelected: false)));
     _eventList = _events.map((e) => EventListItem(event: e, isSelected: false)).toList();
   }
 
-  Duration totalFeedTime(FeedType type) {
-    return const Duration(minutes: 10, seconds: 5);
-  }
+  int _totalFeedDuration(FeedType type) => _events
+      .where((event) => event.type == EventType.FEED && event.feedType == type)
+      .map((event) => event.duration ?? 0)
+      .fold(0, (value, element) => value + element);
 
-  Duration totalSleepDuration() {
-    return const Duration(hours: 2, minutes: 33, seconds: 16);
-  }
+  Duration totalFeedDuration(FeedType type) => Duration(milliseconds: _totalFeedDuration(type));
+
+  int _totalSleepDuration() => _events
+      .where((event) => event.type == EventType.SLEEP)
+      .map((event) => event.duration ?? 0)
+      .fold(0, (value, element) => value + element);
+
+  Duration totalSleepDuration() => Duration(milliseconds: _totalSleepDuration());
 
   get filter => _filter;
   set filter(value) {
@@ -62,6 +72,18 @@ class TimelineModel extends ChangeNotifier {
   }
 
   List<Event> get events => _events;
+
+  int get wet => _events
+      .where((event) => event.toiletContents == ToiletContents.WET)
+      .length;
+
+  int get dirty => _events
+      .where((event) => event.toiletContents == ToiletContents.DIRTY)
+      .length;
+
+  int get wetAndDirty => _events
+      .where((event) => event.toiletContents == ToiletContents.WET_AND_DIRTY)
+      .length;
 }
 
 class EventListItem {

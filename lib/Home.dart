@@ -1,9 +1,12 @@
+import 'package:assignment_4/EditModel.dart';
+import 'package:assignment_4/Event.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment_4/EditFeed.dart';
 import 'package:assignment_4/EditSleep.dart';
 import 'package:assignment_4/EditToilet.dart';
 import 'package:assignment_4/RecordButton.dart';
 import 'package:assignment_4/Navigation.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key, required this.title});
@@ -26,7 +29,10 @@ class _HomeState extends State<Home> {
           message: "Time since last feed event:",
           onPressed: () {
             homeKey.currentState!.push(MaterialPageRoute(builder: (context) {
-              return const EditFeed();
+              return ChangeNotifierProvider<EditModel>(
+                create: (context) => EditModel(event: Event()),
+                child: const EditFeed()
+              );
             }));
           },
         ),
@@ -35,7 +41,10 @@ class _HomeState extends State<Home> {
           message: "Time since last sleep event:",
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const EditSleep();
+              return ChangeNotifierProvider<EditModel>(
+                  create: (context) => EditModel(event: Event()),
+                  child: const EditSleep()
+              );
             }));
           },
         ),

@@ -8,11 +8,11 @@ import 'package:image_picker/image_picker.dart';
 
 class EditModel extends ChangeNotifier {
 
-  final Event _event = Event();
+  late Event _event;
   late async.Timer _timer;
   XFile? _img;
 
-  EditModel() {
+  EditModel({Event? event}): _event = event ?? Event() {
     _timer = async.Timer.periodic(const Duration(seconds: 1), (_) {});
     _timer.cancel();
     _img = null;

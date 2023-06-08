@@ -1,7 +1,14 @@
+import 'package:assignment_4/DataLabel.dart';
+import 'package:assignment_4/DetailsModel.dart';
 import 'package:assignment_4/Enums/EventType.dart';
 import 'package:assignment_4/Enums/FeedType.dart';
 import 'package:assignment_4/Event.dart';
+import 'package:assignment_4/FeedDetails.dart';
+import 'package:assignment_4/Navigation.dart';
+import 'package:assignment_4/SleepDetails.dart';
 import 'package:assignment_4/TimelineModel.dart';
+import 'package:assignment_4/ToiletDetails.dart';
+import 'package:assignment_4/Utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -137,7 +144,38 @@ class _DailyState extends State<Daily> {
         tileColor: item.isSelected? Colors.black12 : Colors.white12,
         onTap: () {
           if (model.selected == 0) {
-            // TODO: navigate to details
+            switch(event.type) {
+              case EventType.FEED:
+                timelineKey.currentState!.push(
+                    MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider<DetailsModel>(
+                            create: (context) => DetailsModel(event: event),
+                            child: const FeedDetails()
+                        )
+                    )
+                );
+              case EventType.SLEEP:
+                timelineKey.currentState!.push(
+                    MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider<DetailsModel>(
+                            create: (context) => DetailsModel(event: event),
+                            child: const SleepDetails()
+                        )
+                    )
+                );
+              case EventType.TOILET:
+              timelineKey.currentState!.push(
+                  MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider<DetailsModel>(
+                          create: (context) => DetailsModel(event: event),
+                          child: const ToiletDetails()
+                      )
+                  )
+              );
+              default:
+                // TODO: Display "data corrupt" toast
+                break;
+            }
           } else {
             model.toggleSelect(item);
           }
@@ -148,8 +186,8 @@ class _DailyState extends State<Daily> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(formatDate(event.time) ?? ''),
-            Text(event.type.toString()),
+            Text(formatTime(event.time) ?? 'Error'),
+            Text(event.type?.name ?? 'Error'),
             Text(formatInt(event.duration) ?? ''),
             const Icon(Icons.arrow_forward_ios),
           ],
@@ -191,24 +229,6 @@ class DailyStats extends StatefulWidget {
 
   @override
   State<DailyStats> createState() => _DailyStatsState();
-}
-
-String format(Duration duration) {
-  return '${duration.inMinutes % 60}m ${duration.inSeconds % 60}s';
-}
-
-String? formatInt(int? duration) {
-  if (duration == null) return null;
-
-  Duration d = Duration(milliseconds: duration);
-
-  return '${d.inHours}h ${d.inMinutes % 60}m ${d.inSeconds % 60}s';
-}
-
-String? formatDate(DateTime? date) {
-  if (date == null) return null;
-
-  return '${date.hour}:${date.minute}:${date.second}';
 }
 
 class _DailyStatsState extends State<DailyStats> {
@@ -253,9 +273,9 @@ class FeedSummary extends StatelessWidget {
             ),
             Column(
               children: <Widget>[
-                DataLabel(getValue: (model) => format(model.totalFeedTime(FeedType.LEFT))),
-                DataLabel(getValue: (model) => format(model.totalFeedTime(FeedType.RIGHT))),
-                DataLabel(getValue: (model) => format(model.totalFeedTime(FeedType.BOTTLE))),
+                DataLabel<TimelineModel>(getValue: (model) => (formatDuration(model.totalFeedDuration(FeedType.LEFT))) ?? '0m 0s'),
+                DataLabel<TimelineModel>(getValue: (model) => (formatDuration(model.totalFeedDuration(FeedType.RIGHT))) ?? '0m 0s'),
+                DataLabel<TimelineModel>(getValue: (model) => (formatDuration(model.totalFeedDuration(FeedType.BOTTLE))) ?? '0m 0s'),
               ],
             ),
           ],
@@ -289,7 +309,7 @@ class SleepSummary extends StatelessWidget {
             ),
             Column(
               children: <Widget>[
-                DataLabel(getValue: (model) => format(model.totalSleepDuration())),
+                DataLabel<TimelineModel>(getValue: (model) => (formatDuration(model.totalSleepDuration()) ?? 'Error')),
               ],
             ),
           ],
@@ -325,9 +345,9 @@ class ToiletSummary extends StatelessWidget {
             ),
             Column(
               children: <Widget>[
-                DataLabel(getValue: (model) => format(model.totalFeedTime(FeedType.LEFT))),
-                DataLabel(getValue: (model) => format(model.totalFeedTime(FeedType.RIGHT))),
-                DataLabel(getValue: (model) => format(model.totalFeedTime(FeedType.BOTTLE))),
+                DataLabel<TimelineModel>(getValue: (model) => model.wet.toString()),
+                DataLabel<TimelineModel>(getValue: (model) => model.dirty.toString()),
+                DataLabel<TimelineModel>(getValue: (model) => model.wetAndDirty.toString()),
               ],
             ),
           ],
@@ -336,37 +356,3 @@ class ToiletSummary extends StatelessWidget {
     );
   }
 }
-
-class DataLabel extends StatelessWidget {
-  const DataLabel({
-    super.key, /*required this.label,*/ required this.getValue,
-  });
-
-  //final String label;
-  final String Function(TimelineModel) getValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<TimelineModel>(
-      builder: (context, model, _) {
-        return Text(getValue(model));
-      },
-    );
-    /*
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Text(label, textAlign: TextAlign.right),
-        ),
-        Consumer<TimelineModel>(
-          builder: (context, model, _) {
-            return Text(getValue(model));
-          },
-        ),
-      ],
-    );
-    */
-  }
-}
-

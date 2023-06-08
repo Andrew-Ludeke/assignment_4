@@ -17,40 +17,37 @@ class _EditSleepState extends State<EditSleep> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<EditModel>(
-      create: (context) => EditModel(),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const TimingContainer(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 64.0),
-                child: Consumer<EditModel>(
-                    builder: buildNotes
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          const TimingContainer(),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 64.0),
+              child: Consumer<EditModel>(
+                  builder: buildNotes
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Consumer<EditModel>(
-                  builder: (context, model, _) => ElevatedButton(
-                      onPressed: () => confirmDiscard(context),
-                      child: const Text('Discard')
-                  ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Consumer<EditModel>(
+                builder: (context, model, _) => ElevatedButton(
+                    onPressed: () => confirmDiscard(context),
+                    child: const Text('Discard')
                 ),
-                Consumer<EditModel>(
-                  builder: (context, model, _) => ElevatedButton(
-                      onPressed: () => confirmSave(context),
-                      child: const Text('Save')
-                  ),
+              ),
+              Consumer<EditModel>(
+                builder: (context, model, _) => ElevatedButton(
+                    onPressed: () => confirmSave(context),
+                    child: const Text('Save')
                 ),
-              ],
-            )
-          ],
-        ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

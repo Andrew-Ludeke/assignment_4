@@ -1,4 +1,5 @@
 import 'package:assignment_4/Home.dart';
+import 'package:assignment_4/Navigation.dart';
 import 'package:flutter/material.dart';
 
 class HomeFlowRoutes {
@@ -18,11 +19,20 @@ class HomeFlow extends StatefulWidget {
 class _HomeFlowState extends State<HomeFlow> {
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: widget.navKey,
-      initialRoute: HomeFlowRoutes.ROOT,
-      onGenerateRoute: (context) => MaterialPageRoute(
-          builder: (context) => const Home(title: "Home")
+    return WillPopScope(
+      onWillPop: () async {
+        final isStackEmpty = !await homeKey.currentState!.maybePop();
+        if (!isStackEmpty) {
+          return false;
+        }
+        return true;
+      },
+      child: Navigator(
+        key: widget.navKey,
+        initialRoute: HomeFlowRoutes.ROOT,
+        onGenerateRoute: (context) => MaterialPageRoute(
+            builder: (context) => const Home(title: "Home")
+        ),
       ),
     );
   }

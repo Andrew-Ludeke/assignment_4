@@ -17,14 +17,23 @@ class TimelineFlow extends StatefulWidget {
 class _TimelineFlowState extends State<TimelineFlow> {
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: timelineKey,
-      initialRoute: TimelineFlowRoutes.ROOT,
-      onGenerateRoute: (settings) {
-        return MaterialPageRoute(
-            builder: (context) => const Timeline()
-        );
+    return WillPopScope(
+      onWillPop: () async {
+        final isStackEmpty = !await timelineKey.currentState!.maybePop();
+        if (!isStackEmpty) {
+          return false;
+        }
+        return true;
       },
+      child: Navigator(
+        key: timelineKey,
+        initialRoute: TimelineFlowRoutes.ROOT,
+        onGenerateRoute: (settings) {
+          return MaterialPageRoute(
+              builder: (context) => const Timeline()
+          );
+        },
+      ),
     );
   }
 }
