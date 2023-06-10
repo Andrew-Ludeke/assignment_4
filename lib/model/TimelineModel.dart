@@ -16,29 +16,8 @@ class TimelineModel extends ChangeNotifier {
   TimelineModel({required DateTime today}) : _today = today {
     _events = <Event>[];
     _eventList = <EventListItem>[];
-    /*
-      Event(
-        type: EventType.FEED,
-        time: DateTime(2023, 6, 7, 12, 30, 12),
-        duration: const Duration(minutes: 10).inMilliseconds,
-        feedType: FeedType.BOTTLE,
-      ),
-      Event(
-        type: EventType.SLEEP,
-        time: DateTime(2023, 6, 7, 14, 12, 46),
-        duration: const Duration(hours: 1, minutes: 23, seconds: 41).inMilliseconds,
-      ),
-      Event(
-        type: EventType.TOILET,
-        time: DateTime(2023, 6, 7, 17, 00, 00),
-        duration: const Duration(minutes: 10).inMilliseconds,
-        toiletContents: ToiletContents.WET_AND_DIRTY,
-      ),
-    ];
-    */
     getEventList().then(
         (_) {
-          print(_eventList);
           eventList = _events.map((e) => EventListItem(event: e, isSelected: false)).toList();
           //notifyListeners();
         }
@@ -68,15 +47,23 @@ class TimelineModel extends ChangeNotifier {
   List<EventListItem> get eventList => _eventList
       .where((item) => _filter == null ? true : item.event.type == _filter)
       .toList();
+
+  /*
+  Future<List<EventListItem>> get eventList async {
+    if (_events == null) {
+      await eventRepos
+    }
+    return _eventList
+        .where((item) => _filter == null ? true : item.event.type == _filter)
+        .toList();
+  }
+  */
+
   set eventList(value) {
     _eventList = value;
     notifyListeners();
   }
-  /*
-  List<Event> get eventList => _events
-      .where((element) => _filter == null ? true : element.type == _filter)
-      .toList();
-   */
+
   int get selected => _eventList
       .where((item) => item.isSelected)
       .length;

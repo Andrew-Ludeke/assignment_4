@@ -79,8 +79,34 @@ class _ToiletDetailsState extends State<ToiletDetails> {
               ],
             ),
             Consumer<DetailsModel>(
-              builder: (context, model, _) {
-                    File? img = model.imgFile;
+              builder:(context, model, _) => FutureBuilder(
+                  future: model.imgFile,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      File? img = snapshot.data;
+
+                      if (img == null) {
+                        return Image.asset(
+                          'assets/images/placeholder.png',
+                          height: 180,
+                        );
+                      }
+
+                      return Image.file(
+                        File(img.path),
+                        height: 180,
+                      );
+                    } else {
+                      return const SizedBox(
+                        height: 180,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                  }
+              )
+              /*
+              {
+                    File? img = await model.imgFile;
                     if (img == null) {
                       return Image.asset(
                         'assets/images/placeholder.png', height: 180,
@@ -89,6 +115,7 @@ class _ToiletDetailsState extends State<ToiletDetails> {
 
                     return Image.file(File(img.path));
               },
+              */
             ),
             Expanded(
               child: Padding(
