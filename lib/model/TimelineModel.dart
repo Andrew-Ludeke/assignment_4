@@ -16,6 +16,7 @@ class TimelineModel extends ChangeNotifier {
   TimelineModel({required DateTime today}) : _today = today {
     _events = <Event>[];
     _eventList = <EventListItem>[];
+    /*
     getEventList().then((_) => calculateEventList()
       /*
         (_) {
@@ -24,6 +25,7 @@ class TimelineModel extends ChangeNotifier {
         }
         */
     );
+    */
   }
 
   void calculateEventList() {
@@ -51,20 +53,25 @@ class TimelineModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /*
   List<EventListItem> get eventList => _eventList
       .where((item) => _filter == null ? true : item.event.type == _filter)
       .toList();
+  */
 
-  /*
   Future<List<EventListItem>> get eventList async {
-    if (_events == null) {
-      await eventRepos
+    print("\n\nGETTING LIST\n\n");
+    if (_events.isEmpty) {
+      print("\n\nFETCHING LIST FROM DATABASE\n\n");
+      await getEventList();
+      calculateEventList();
     }
+
     return _eventList
         .where((item) => _filter == null ? true : item.event.type == _filter)
         .toList();
   }
-  */
+
 
   set eventList(value) {
     _eventList = value;
@@ -120,20 +127,20 @@ class TimelineModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /*
-  Future<void> saveEvent(Event event) async {
-    return await _eventRepo.persist(event);
-  }
-  */
   void updateEvent(Event newEvent) async {
     if (newEvent.id != null) {
       int index = _events.indexWhere((e) => e.id == newEvent.id);
       _events[index] = newEvent;
       calculateEventList();
-      print("\n\nUPDATING........\n\n");
-      print(_eventList);
       //notifyListeners();
     }
+  }
+
+  Event getSelectedEvent() {
+    return _eventList
+        .where((item) => item.isSelected)
+        .first
+        .event;
   }
 }
 

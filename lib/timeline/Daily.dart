@@ -49,9 +49,23 @@ class _DailyState extends State<Daily> {
               ),
             ],
           ),
-          const Center(child: Padding(
-            padding: EdgeInsets.all(0.0),
-            child: DailyStats(),
+          Center(child: Padding(
+            padding: const EdgeInsets.all(0.0),
+              child: FutureBuilder(
+                  future: (){
+                    TimelineModel model = Provider.of<TimelineModel>(context, listen: false);
+                    return model.eventList;
+                  }(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Center(
+                          child: CircularProgressIndicator()
+                      );
+                    }
+
+                    return const DailyStats();
+                  }
+              )
           )),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,10 +107,12 @@ class _DailyState extends State<Daily> {
                     builder: (context, model, _) => TextButton(
                       onPressed: model.selected == 1
                       ? () async {
-                        Event event = model
+                        Event event = model.getSelectedEvent();
+                        /*
                             .eventList.where((item) => item.isSelected)
                             .first
                             .event;
+                        */
 
                         if (event.type == null) {
                           // TODO: Toast error
@@ -181,9 +197,22 @@ class _DailyState extends State<Daily> {
           ),
           Expanded(
             child: Consumer<TimelineModel>(
-              builder: (context, model, _) => ListView.builder(
-                itemBuilder: (context, index) => buildEventListItem(context, model, index),
-                itemCount: model.eventList.length,
+              builder: (context, model, _) => FutureBuilder(
+                  future: model.eventList,
+                  builder: (context, snapshot) {
+
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const SizedBox(
+                        height: 180,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    return ListView.builder(
+                      itemBuilder: (context, index) => buildEventListItem(context, model, snapshot, index),
+                      itemCount: snapshot.data?.length ?? 0,
+                    );
+                  }
               ),
             ),
           ),
@@ -192,8 +221,14 @@ class _DailyState extends State<Daily> {
     );
   }
 
-  Widget? buildEventListItem(BuildContext context, TimelineModel model, int index) {
-    EventListItem item = model.eventList[index];
+  Widget? buildEventListItem(
+    BuildContext context,
+    TimelineModel model,
+    AsyncSnapshot<List<EventListItem>> snapshot,
+    int index
+  ) {
+
+    EventListItem item = snapshot.data![index];
     Event event = item.event;
 
     return Padding(
