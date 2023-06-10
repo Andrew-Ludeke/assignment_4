@@ -39,4 +39,14 @@ class EventRepository {
     event.id = docRef.id;
     return await docRef.set(event.toJson());
   }
+
+  Future<Event> fetchById(String id) async {
+    DocumentReference docRef = collection.doc(id);
+
+    DocumentSnapshot snapshot = await docRef.get();
+
+    Event event = Event.fromJson(snapshot.data() as Map<String, dynamic>);
+
+    return event;
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:assignment_4/timeline/Daily.dart';
+import 'package:assignment_4/model/Event.dart';
 import 'package:assignment_4/widgets/DataLabel.dart';
 import 'package:assignment_4/model/DetailsModel.dart';
 import 'package:assignment_4/model/EditModel.dart';
@@ -23,85 +23,100 @@ class _SleepDetailsState extends State<SleepDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-          children: <Widget> [
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0, right: 16.0, bottom: 32.0),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Consumer<DetailsModel>(
-                  builder: (context, model, _) => TextButton(
-                    onPressed: () {
-                      timelineKey.currentState!.push(
-                          MaterialPageRoute(
-                              builder: (context) {
-                                return ChangeNotifierProvider<EditModel>(
-                                    create: (context) => EditModel(event: model.event),
-                                    child: EditSleep(navKey: timelineKey)
-                                );
-                              }
-                          )
-                      );
-                    },
-                    child: const Icon(Icons.edit),
+    return WillPopScope(
+      onWillPop: () async {
+        final DetailsModel model = Provider.of<DetailsModel>(context, listen: false);
+        Event? event = model.isDirty ? model.event.copy() : null;
+        timelineKey.currentState!.pop(event);
+        return false;
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+            children: <Widget> [
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, right: 16.0, bottom: 32.0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Consumer<DetailsModel>(
+                    builder: (context, model, _) => TextButton(
+                      onPressed: () async {
+                        Event? newEvent = await timelineKey.currentState!.push(
+                            MaterialPageRoute(
+                                builder: (context) {
+                                  return ChangeNotifierProvider<EditModel>(
+                                      create: (context) => EditModel(event: model.event.copy()),
+                                      child: EditSleep(navKey: timelineKey)
+                                  );
+                                }
+                            )
+                        );
+
+                        if (!mounted) return;
+
+                        if (newEvent != null) {
+                          model.isDirty = true;
+                          model.updateEvent(newEvent);
+                        }
+                      },
+                      child: const Icon(Icons.edit),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text('Start Time', style: labelStyle),
+                        Text('End Time', style: labelStyle,),
+                        Text('Duration', style: labelStyle,),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Start Time', style: labelStyle),
-                      Text('End Time', style: labelStyle,),
-                      Text('Duration', style: labelStyle,),
+                      DataLabel<DetailsModel>(
+                        getValue: (model) => formatTime(model.event.time) ?? 'Error',
+                        style: labelStyle,
+                      ),
+                      DataLabel<DetailsModel>(
+                        getValue: (model) => formatTime(model.event.endTime) ?? 'Error',
+                        style: labelStyle,
+                      ),
+                      DataLabel<DetailsModel>(
+                        getValue: (model) => formatDuration(model.duration) ?? 'Error',
+                        style: labelStyle,
+                      ),
                     ],
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    DataLabel<DetailsModel>(
-                      getValue: (model) => formatTime(model.event.time) ?? 'Error',
-                      style: labelStyle,
-                    ),
-                    DataLabel<DetailsModel>(
-                      getValue: (model) => formatTime(model.event.endTime) ?? 'Error',
-                      style: labelStyle,
-                    ),
-                    DataLabel<DetailsModel>(
-                      getValue: (model) => formatDuration(model.duration) ?? 'Error',
-                      style: labelStyle,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 32.0),
-                child: Consumer<DetailsModel>(
-                    builder: (context, model, _) {
-                      TextEditingController notesController = TextEditingController();
-                      notesController.text = model.event.notes ?? '';
+                ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 32.0),
+                  child: Consumer<DetailsModel>(
+                      builder: (context, model, _) {
+                        TextEditingController notesController = TextEditingController();
+                        notesController.text = model.event.notes ?? '';
 
-                      return const TextField(
-                        enabled: false,
-                        maxLines: null,
-                        expands: true,
-                        decoration: InputDecoration(hintText: 'No notes'),
-                      );
-                    }
+                        return const TextField(
+                          enabled: false,
+                          maxLines: null,
+                          expands: true,
+                          decoration: InputDecoration(hintText: 'No notes'),
+                        );
+                      }
+                  ),
                 ),
               ),
-            ),
-          ]
+            ]
+        ),
       ),
     );
   }

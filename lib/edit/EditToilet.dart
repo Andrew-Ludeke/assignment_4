@@ -113,6 +113,9 @@ class _EditToiletState extends State<EditToilet> {
                             ElevatedButton(
                               onPressed: () async {
                                 EditModel model = Provider.of<EditModel>(context, listen: false);
+                                if (model.imgPath == null) {
+                                  model.imgUri = null;
+                                }
                                 model.imgFile = Future.value(null);
                               },
                               child: const Icon(Icons.delete),
@@ -256,7 +259,7 @@ class _EditToiletState extends State<EditToilet> {
     TextButton confirmButton = TextButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pop();
-          widget.navKey.currentState?.pop();
+          widget.navKey.currentState?.pop(null);
         },
         child: const Text('Discard')
     );
@@ -292,7 +295,7 @@ class _EditToiletState extends State<EditToilet> {
               content: Text("Event saved!"),
               duration: Duration(seconds: 2),
             ));
-            widget.navKey.currentState?.pop();
+            widget.navKey.currentState?.pop(model.event.copy());
           });
         },
         child: const Text('Save')

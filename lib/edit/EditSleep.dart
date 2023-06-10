@@ -76,7 +76,7 @@ class _EditSleepState extends State<EditSleep> {
     TextButton confirmButton = TextButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pop();
-          widget.navKey.currentState?.pop();
+          widget.navKey.currentState?.pop(null);
         },
         child: const Text('Discard')
     );
@@ -112,7 +112,7 @@ class _EditSleepState extends State<EditSleep> {
                 content: Text("Event saved!"),
                 duration: Duration(seconds: 2),
               ));
-              widget.navKey.currentState?.pop();
+              widget.navKey.currentState?.pop(model.event.copy());
           });
         },
         child: const Text('Save')

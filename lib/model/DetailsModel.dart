@@ -3,30 +3,20 @@ import 'dart:io';
 import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/model/Event.dart';
+import 'package:assignment_4/repository/event_repository.dart';
 import 'package:assignment_4/repository/image_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 
 class DetailsModel extends ChangeNotifier {
+  final EventRepository _eventRepo = EventRepository();
   final ImageRepository _imgRepo = ImageRepository();
-  late final Event _event;
+  late Event _event;
   XFile? _imgFile = null;
+  bool isDirty = false;
 
   DetailsModel({required event}): _event = event;
-
-  /*
-  static Future<DetailsModel> create({required Event event}) async {
-    DetailsModel model = DetailsModel._(event: event);
-    if (model._event.imgUri == null) {
-      model._imgFile = null;
-    }
-    else {
-      model._imgFile = await model._imgRepo.fetch(model._event.imgUri!);
-    }
-    return model;
-  }
-  */
 
   Event get event => _event;
 
@@ -41,9 +31,14 @@ class DetailsModel extends ChangeNotifier {
   FeedType? get feedType => _event.feedType;
 
   Future<XFile?> get imgFile async {
-    if (_event.imgUri != null && _imgFile == null) {
+    if (_event.imgUri != null) {
       _imgFile = await _imgRepo.fetch(_event.imgUri!);
     }
     return _imgFile;
+  }
+
+  void updateEvent(Event newEvent) {
+    _event = newEvent;
+    notifyListeners();
   }
 }

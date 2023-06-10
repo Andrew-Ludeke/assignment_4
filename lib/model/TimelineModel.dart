@@ -16,12 +16,19 @@ class TimelineModel extends ChangeNotifier {
   TimelineModel({required DateTime today}) : _today = today {
     _events = <Event>[];
     _eventList = <EventListItem>[];
-    getEventList().then(
+    getEventList().then((_) => calculateEventList()
+      /*
         (_) {
           eventList = _events.map((e) => EventListItem(event: e, isSelected: false)).toList();
           //notifyListeners();
         }
+        */
     );
+  }
+
+  void calculateEventList() {
+    _eventList.clear();
+    eventList = _events.map((e) => EventListItem(event: e, isSelected: false)).toList();
   }
 
   int _totalFeedDuration(FeedType type) => _events
@@ -118,6 +125,16 @@ class TimelineModel extends ChangeNotifier {
     return await _eventRepo.persist(event);
   }
   */
+  void updateEvent(Event newEvent) async {
+    if (newEvent.id != null) {
+      int index = _events.indexWhere((e) => e.id == newEvent.id);
+      _events[index] = newEvent;
+      calculateEventList();
+      print("\n\nUPDATING........\n\n");
+      print(_eventList);
+      //notifyListeners();
+    }
+  }
 }
 
 class EventListItem {

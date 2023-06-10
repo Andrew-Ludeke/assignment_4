@@ -92,7 +92,7 @@ class _DailyState extends State<Daily> {
                   Consumer<TimelineModel>(
                     builder: (context, model, _) => TextButton(
                       onPressed: model.selected == 1
-                      ? () {
+                      ? () async {
                         Event event = model
                             .eventList.where((item) => item.isSelected)
                             .first
@@ -105,11 +105,11 @@ class _DailyState extends State<Daily> {
 
                         model.deselectAll();
 
-                        timelineKey.currentState!.push(
+                        Event? newEvent = await timelineKey.currentState!.push(
                             MaterialPageRoute(
                                 builder: (context) {
                                   return ChangeNotifierProvider<EditModel>(
-                                      create: (context) => EditModel(event: event),
+                                      create: (context) => EditModel(event: event.copy()),
                                       builder: (context, _) {
                                         switch(event.type!) {
                                           case EventType.FEED: return EditFeed(navKey: timelineKey);
@@ -122,6 +122,11 @@ class _DailyState extends State<Daily> {
                             )
                         );
 
+                        if (!mounted) return;
+
+                        if (newEvent != null) {
+                          model.updateEvent(newEvent);
+                        }
                       }
                       : null,
                       child: const Icon(Icons.edit),
@@ -197,7 +202,7 @@ class _DailyState extends State<Daily> {
         color: item.isSelected? const Color(0xffd3bbff): Colors.white,
         child: ListTile(
           tileColor: Colors.transparent,
-          onTap: () {
+          onTap: () async {
             if (model.selected == 0) {
 
               EventType? type = event.type;
@@ -205,7 +210,7 @@ class _DailyState extends State<Daily> {
                 // TODO: toast error
                 return;
               }
-              timelineKey.currentState!.push(
+              Event? newEvent = await timelineKey.currentState!.push(
                   MaterialPageRoute(
                       builder: (context) => ChangeNotifierProvider<DetailsModel>(
                           create: (context) => DetailsModel(event: event),
@@ -219,6 +224,12 @@ class _DailyState extends State<Daily> {
                       )
                   )
               );
+
+              if (!mounted) return;
+
+              if (newEvent != null) {
+                model.updateEvent(newEvent);
+              }
             } else {
               model.toggleSelect(item);
             }

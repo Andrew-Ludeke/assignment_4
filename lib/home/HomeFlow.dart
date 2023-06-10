@@ -21,7 +21,7 @@ class _HomeFlowState extends State<HomeFlow> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final isStackEmpty = !await homeKey.currentState!.maybePop();
+        final bool isStackEmpty = !await homeKey.currentState!.maybePop();
         if (!isStackEmpty) {
           return false;
         }

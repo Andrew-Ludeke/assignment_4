@@ -74,4 +74,17 @@ class Event
     )
     ''';
   }
+
+  Event copy() {
+    return Event(
+        id: id,
+        type: type,
+        time: time,
+        notes: notes,
+        duration: duration,
+        feedType: feedType,
+        toiletContents: toiletContents,
+        imgUri: imgUri
+    );
+  }
 }

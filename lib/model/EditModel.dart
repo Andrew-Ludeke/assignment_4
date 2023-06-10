@@ -17,6 +17,8 @@ class EditModel extends ChangeNotifier {
   XFile? _imgFile;
   final EventRepository _eventRepo = EventRepository();
   final ImageRepository _imgRepo = ImageRepository();
+  bool isNewImage = false;
+  String? _imgPath = null;
 
   EditModel({Event? event}): _event = event ?? Event() {
     _timer = async.Timer.periodic(const Duration(seconds: 1), (_) {});
@@ -56,6 +58,12 @@ class EditModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String? get imgUri => _event.imgUri;
+  set imgUri(String? uri) {
+    _event.imgUri = uri;
+    notifyListeners();
+  }
+
   void tick (async.Timer t) {
     endTime = DateTime.now();
   }
@@ -74,7 +82,7 @@ class EditModel extends ChangeNotifier {
   bool get isTiming => _timer.isActive;
 
   Future<void> persist() async {
-    if (imgFile != null) {
+    if (_imgPath != null && _imgFile != null) {
       _event.imgUri = await _imgRepo.persist(_imgFile!);
     }
 
@@ -82,7 +90,10 @@ class EditModel extends ChangeNotifier {
   }
 
   Future<XFile?> get imgFile async {
-    if (_event.imgUri != null && _imgFile == null) {
+    if (_imgPath != null) {
+      _imgFile = XFile(imgPath!);
+    } else if (_event.imgUri != null && _imgFile == null) {
+      print(_imgPath ?? 'null');
       _imgFile = await _imgRepo.fetch(_event.imgUri!);
     }
     return _imgFile;
@@ -90,7 +101,20 @@ class EditModel extends ChangeNotifier {
   set imgFile(Future<XFile?> value) {
     value.then((val) {
       _imgFile = val;
+      if (val == null) {
+        _imgPath = null;
+      } else {
+        _imgPath = val.path;
+      }
       notifyListeners();
     });
   }
+
+  String? get imgPath => _imgPath;
+  set imgPath(String? value) {
+    _imgPath = value;
+    notifyListeners();
+  }
+
+  Event get event => _event;
 }
