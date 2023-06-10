@@ -37,7 +37,7 @@ class _FeedDetailsState extends State<FeedDetails> {
                           builder: (context) {
                             return ChangeNotifierProvider<EditModel>(
                                 create: (context) => EditModel(event: model.event),
-                                child: const EditFeed()
+                                child: EditFeed(navKey: timelineKey)
                             );
                           }
                       )

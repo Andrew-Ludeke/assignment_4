@@ -2,10 +2,11 @@ import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/edit/TimingContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:assignment_4/Navigation.dart';
 
 class EditSleep extends StatefulWidget {
-  const EditSleep({super.key});
+  const EditSleep({super.key, required this.navKey});
+
+  final GlobalKey<NavigatorState> navKey;
 
   @override
   State<EditSleep> createState() => _EditSleepState();
@@ -75,7 +76,7 @@ class _EditSleepState extends State<EditSleep> {
     TextButton confirmButton = TextButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pop();
-          homeKey.currentState?.pop();
+          widget.navKey.currentState?.pop();
         },
         child: const Text('Discard')
     );
@@ -111,7 +112,7 @@ class _EditSleepState extends State<EditSleep> {
                 content: Text("Event saved!"),
                 duration: Duration(seconds: 2),
               ));
-              homeKey.currentState?.pop();
+              widget.navKey.currentState?.pop();
           });
         },
         child: const Text('Save')

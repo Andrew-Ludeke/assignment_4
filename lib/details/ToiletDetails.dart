@@ -8,6 +8,7 @@ import 'package:assignment_4/edit/EditToilet.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../Utilities.dart';
 
@@ -40,7 +41,7 @@ class _ToiletDetailsState extends State<ToiletDetails> {
                             builder: (context) {
                               return ChangeNotifierProvider<EditModel>(
                                   create: (context) => EditModel(event: model.event),
-                                  child: const EditToilet()
+                                  child: EditToilet(navKey: timelineKey)
                               );
                             }
                         )
@@ -83,7 +84,7 @@ class _ToiletDetailsState extends State<ToiletDetails> {
                   future: model.imgFile,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      File? img = snapshot.data;
+                      XFile? img = snapshot.data;
 
                       if (img == null) {
                         return Image.asset(

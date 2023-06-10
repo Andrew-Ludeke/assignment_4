@@ -5,12 +5,13 @@ import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/model/Event.dart';
 import 'package:assignment_4/repository/image_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 
 class DetailsModel extends ChangeNotifier {
   final ImageRepository _imgRepo = ImageRepository();
   late final Event _event;
-  File? _imgFile = null;
+  XFile? _imgFile = null;
 
   DetailsModel({required event}): _event = event;
 
@@ -39,7 +40,7 @@ class DetailsModel extends ChangeNotifier {
   }
   FeedType? get feedType => _event.feedType;
 
-  Future<File?> get imgFile async {
+  Future<XFile?> get imgFile async {
     if (_event.imgUri != null && _imgFile == null) {
       _imgFile = await _imgRepo.fetch(_event.imgUri!);
     }

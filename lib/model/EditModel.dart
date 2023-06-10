@@ -14,14 +14,14 @@ class EditModel extends ChangeNotifier {
 
   late Event _event;
   late async.Timer _timer;
-  XFile? _img;
+  XFile? _imgFile;
   final EventRepository _eventRepo = EventRepository();
   final ImageRepository _imgRepo = ImageRepository();
 
   EditModel({Event? event}): _event = event ?? Event() {
     _timer = async.Timer.periodic(const Duration(seconds: 1), (_) {});
     _timer.cancel();
-    _img = null;
+    _imgFile = null;
   }
 
   DateTime? get time => _event.time;
@@ -74,17 +74,23 @@ class EditModel extends ChangeNotifier {
   bool get isTiming => _timer.isActive;
 
   Future<void> persist() async {
-    if (img != null) {
-      _event.imgUri = await _imgRepo.persist(File(_img!.path));
+    if (imgFile != null) {
+      _event.imgUri = await _imgRepo.persist(_imgFile!);
     }
 
     return await _eventRepo.persist(_event);
   }
 
-  XFile? get img => _img;
-  set img(XFile? value) {
-    _img = value;
-    notifyListeners();
+  Future<XFile?> get imgFile async {
+    if (_event.imgUri != null && _imgFile == null) {
+      _imgFile = await _imgRepo.fetch(_event.imgUri!);
+    }
+    return _imgFile;
   }
-
+  set imgFile(Future<XFile?> value) {
+    value.then((val) {
+      _imgFile = val;
+      notifyListeners();
+    });
+  }
 }

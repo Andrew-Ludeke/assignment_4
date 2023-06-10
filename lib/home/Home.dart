@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
             homeKey.currentState!.push(MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
                 create: (context) => EditModel(event: Event(type: EventType.FEED)),
-                child: const EditFeed()
+                child: EditFeed(navKey: homeKey)
               );
             }));
           },
@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
                   create: (context) => EditModel(event: Event(type: EventType.SLEEP)),
-                  child: const EditSleep()
+                  child: EditSleep(navKey: homeKey)
               );
             }));
           },
@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
                   create: (context) => EditModel(event: Event(type: EventType.TOILET)),
-                  child: const EditToilet()
+                  child: EditToilet(navKey: homeKey)
               );
             }));
           },

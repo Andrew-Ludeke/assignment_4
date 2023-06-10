@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:assignment_4/Navigation.dart';
 
 class EditToilet extends StatefulWidget {
-  const EditToilet({super.key});
+  const EditToilet({super.key, required this.navKey});
+
+  final GlobalKey<NavigatorState> navKey;
 
   @override
   State<EditToilet> createState() => _EditToiletState();
@@ -46,7 +47,31 @@ class _EditToiletState extends State<EditToilet> {
               children: [
                 Positioned.fill(
                   child: Consumer<EditModel>(
-                    builder: (context, model, _) => buildImage(model),
+                    builder: (context, model, _) => FutureBuilder(
+                      future: model.imgFile,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            XFile? img = snapshot.data;
+
+                            if (img == null) {
+                              return Image.asset(
+                                'assets/images/placeholder.png',
+                                height: 180,
+                              );
+                            }
+
+                            return Image.file(
+                              File(img.path),
+                              height: 180,
+                            );
+                          } else {
+                            return const SizedBox(
+                              height: 180,
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+                        }
+                    ),
                   ),
                 ),
                 Positioned(
@@ -70,7 +95,7 @@ class _EditToiletState extends State<EditToilet> {
                                   return img;
                                 }
                                 EditModel model = Provider.of<EditModel>(context, listen: false);
-                                model.img = await pickImage();
+                                model.imgFile = pickImage();
                               },
                               child: const Icon(Icons.folder),
                             ),
@@ -81,14 +106,14 @@ class _EditToiletState extends State<EditToilet> {
                                   return await picker.pickImage(source: ImageSource.camera);
                                 }
                                 EditModel model = Provider.of<EditModel>(context, listen: false);
-                                model.img = await pickImage();
+                                model.imgFile = pickImage();
                               },
                               child: const Icon(Icons.camera),
                             ),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 EditModel model = Provider.of<EditModel>(context, listen: false);
-                                model.img = null;
+                                model.imgFile = Future.value(null);
                               },
                               child: const Icon(Icons.delete),
                             ),
@@ -176,15 +201,14 @@ class _EditToiletState extends State<EditToilet> {
     );
   }
 
-  Image buildImage(EditModel model) {
-    XFile? xImg = model.img;
-    if (xImg == null) {
+  Future<Image> buildImage(EditModel model) async {
+    XFile? img = await model.imgFile;
+    if (img == null) {
       return Image.asset(
         'assets/images/placeholder.png', height: 180,
       );
     }
 
-    File img = File(xImg.path);
     return Image.file(File(img.path));
   }
 
@@ -232,7 +256,7 @@ class _EditToiletState extends State<EditToilet> {
     TextButton confirmButton = TextButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pop();
-          homeKey.currentState?.pop();
+          widget.navKey.currentState?.pop();
         },
         child: const Text('Discard')
     );
@@ -268,7 +292,7 @@ class _EditToiletState extends State<EditToilet> {
               content: Text("Event saved!"),
               duration: Duration(seconds: 2),
             ));
-            homeKey.currentState?.pop();
+            widget.navKey.currentState?.pop();
           });
         },
         child: const Text('Save')

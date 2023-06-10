@@ -4,6 +4,7 @@ import 'package:assignment_4/model/Event.dart';
 import 'package:assignment_4/uri_extension.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as Path;
@@ -23,14 +24,14 @@ class ImageRepository {
   late final FirebaseStorage db;
   late final Reference storageRef;
 
-  Future<String?> persist(File file) async {
+  Future<String?> persist(XFile file) async {
     String id = const Uuid().v1();
     String extension = Path.extension(file.path);
 
     Reference imgRef = storageRef.child(id + extension);
 
     try {
-      await imgRef.putFile(file);
+      await imgRef.putFile(File(file.path));
     } on FirebaseException catch (e) {
       return null;
     }
@@ -38,7 +39,7 @@ class ImageRepository {
     return await imgRef.getDownloadURL();
   }
 
-  Future<File?> fetch(String uri) async {
+  Future<XFile?> fetch(String uri) async {
     Reference imgRef = db.refFromURL(uri);
 
     String id = const Uuid().v1();
@@ -49,6 +50,6 @@ class ImageRepository {
 
     TaskSnapshot downloadTask = await imgRef.writeToFile(imgFile);
 
-    return imgFile;
+    return XFile(imgFile.path);
   }
 }
