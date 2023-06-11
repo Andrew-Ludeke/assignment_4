@@ -66,7 +66,12 @@ class _EditSleepState extends State<EditSleep> {
                     ),
                     Consumer<EditModel>(
                       builder: (context, model, _) => ElevatedButton(
-                          onPressed: () => confirmSave(context),
+                          onPressed: model.validate().isEmpty
+                              ? () => confirmSave(context, model)
+                              : () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Error: please enter ${model.validate().join(', ')}."),
+                                duration: const Duration(seconds: 2),
+                          )),
                           child: const Text('Save')
                       ),
                     ),
@@ -134,8 +139,7 @@ class _EditSleepState extends State<EditSleep> {
     );
   }
 
-  void confirmSave(BuildContext context) {
-    EditModel model = Provider.of<EditModel>(context, listen: false);
+  void confirmSave(BuildContext context, EditModel model) {
 
     TextButton confirmButton = TextButton(
         onPressed: () {
@@ -167,8 +171,8 @@ class _EditSleepState extends State<EditSleep> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Discard'),
-        content: const Text('Are you sure you want to discard this session?'),
+        title: const Text('Save'),
+        content: const Text('Are you sure you want to save this session?'),
         actions: [
           confirmButton,
           denyButton,

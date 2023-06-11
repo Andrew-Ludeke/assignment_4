@@ -76,7 +76,12 @@ class _EditFeedState extends State<EditFeed> {
                       ),
                       Consumer<EditModel>(
                         builder: (context, model, _) => ElevatedButton(
-                            onPressed: () => confirmSave(context),
+                            onPressed: model.validate().isEmpty
+                                ? () => confirmSave(context, model)
+                                : () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text("Error: please enter ${model.validate().join(', ')}."),
+                                  duration: const Duration(seconds: 2),
+                                )),
                             child: const Text('Save')
                         ),
                       ),
@@ -159,19 +164,16 @@ class _EditFeedState extends State<EditFeed> {
     );
   }
 
-  void confirmSave(BuildContext context) {
-    EditModel model = Provider.of<EditModel>(context, listen: false);
-
+  void confirmSave(BuildContext context, EditModel model) {
     TextButton confirmButton = TextButton(
         onPressed: () {
+          Navigator.of(context, rootNavigator: true).pop();
+
           setState(() {
             isSaving = true;
           });
-          Navigator.of(context, rootNavigator: true).pop();
 
-          EditModel model = Provider.of<EditModel>(context, listen: false);
-
-          model.persist().then( (_) {
+          model.persist().then((_) {
             setState(() {
               isSaving = false;
             });
@@ -195,8 +197,8 @@ class _EditFeedState extends State<EditFeed> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Discard'),
-        content: const Text('Are you sure you want to discard this session?'),
+        title: const Text('Save'),
+        content: const Text('Are you sure you want to save this session?'),
         actions: [
           confirmButton,
           denyButton,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:assignment_4/StreamProvider.dart';
+import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
 import 'package:assignment_4/repository/event_repository.dart';
@@ -118,4 +119,23 @@ class EditModel extends ChangeNotifier {
   }
 
   Event get event => _event;
+
+  List<String> validate() {
+    List<String> missing = <String> [];
+
+    switch (_event.type) {
+      case EventType.FEED:
+        if (time == null) missing.add('start time');
+        if (endTime == null) missing.add('end time');
+        if (feedType == null) missing.add('feed type');
+      case EventType.SLEEP:
+        if (time == null) missing.add('start time');
+        if (endTime == null) missing.add('end time');
+      case EventType.TOILET:
+        if (time == null) missing.add('start time');
+      default: break;
+    }
+
+    return missing;
+  }
 }
