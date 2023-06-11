@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TimingContainer extends StatefulWidget {
-  const TimingContainer({super.key});
+  const TimingContainer({super.key, required this.isEditing});
+
+  final bool isEditing;
 
   @override
   State<TimingContainer> createState() => _TimingContainerState();
@@ -19,7 +21,11 @@ class _TimingContainerState extends State<TimingContainer> with TickerProviderSt
   @override
   initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(
+        length: 2,
+        vsync: this,
+        initialIndex: widget.isEditing ? 1 : 0
+    );
   }
 
   @override
@@ -32,12 +38,16 @@ class _TimingContainerState extends State<TimingContainer> with TickerProviderSt
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        TabBar(
-          controller: tabController,
-          tabs: const <Tab>[
-            Tab(text: "Timer"),//, icon: Icon(Icons.timer)),
-            Tab(text: "Manual Entry"),//, icon: Icon(Icons.text_fields)),
-          ],
+        IgnorePointer(
+          ignoring: widget.isEditing,
+          child: TabBar(
+            controller: tabController,
+            unselectedLabelColor: widget.isEditing ? Colors.grey: Colors.black,
+            tabs: const <Tab>[
+              Tab(text: "Timer"),
+              Tab(text: "Manual Entry"),
+            ],
+          ),
         ),
         SizedBox(
           height: 160,

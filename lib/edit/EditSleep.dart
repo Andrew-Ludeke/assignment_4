@@ -36,7 +36,7 @@ class _EditSleepState extends State<EditSleep> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const TimingContainer(),
+          TimingContainer(isEditing: widget.isEditing),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 64.0),

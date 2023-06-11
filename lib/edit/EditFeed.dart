@@ -38,7 +38,7 @@ class _EditFeedState extends State<EditFeed> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const TimingContainer(),
+          TimingContainer(isEditing: widget.isEditing),
           const Align(
             alignment: Alignment.bottomLeft,
             child: Text('Feed Type', style: TextStyle(fontSize: 24.0)),
