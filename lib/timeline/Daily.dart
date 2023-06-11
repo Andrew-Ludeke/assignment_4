@@ -195,17 +195,18 @@ class _DailyState extends State<Daily> {
               builder: (context, model, _) => FutureBuilder(
                   future: model.eventList,
                   builder: (context, snapshot) {
-
                     if (snapshot.connectionState != ConnectionState.done) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-                      return const Center(child: Text("Not events"));
+                      return const Center(child: Text("No events"));
+                    } else if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemBuilder: (context, index) => buildEventListItem(context, model, snapshot, index),
+                        itemCount: snapshot.data!.length,
+                      );
+                    } else {
+                      return const Center(child: Text("Error fetching events"));
                     }
-
-                    return ListView.builder(
-                      itemBuilder: (context, index) => buildEventListItem(context, model, snapshot, index),
-                      itemCount: snapshot.data?.length ?? 0,
-                    );
                   }
               ),
             ),
