@@ -1,3 +1,4 @@
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/model/Event.dart';
@@ -19,7 +20,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,37 +28,49 @@ class _HomeState extends State<Home> {
         RecordButton(
           type: EventType.FEED,
           message: "Time since last feed event:",
-          onPressed: () {
-            homeKey.currentState!.push(MaterialPageRoute(builder: (context) {
+          onPressed: () async {
+            await homeKey.currentState!.push(MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
                 create: (context) => EditModel(event: Event(type: EventType.FEED)),
                 child: EditFeed(navKey: homeKey)
               );
             }));
+
+            if (!mounted) return;
+
+            Streams().updateHomeFlowTitle("Home");
           },
         ),
         RecordButton(
           type: EventType.SLEEP,
           message: "Time since last sleep event:",
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+          onPressed: () async {
+            await Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
                   create: (context) => EditModel(event: Event(type: EventType.SLEEP)),
                   child: EditSleep(navKey: homeKey)
               );
             }));
+
+            if (!mounted) return;
+
+            Streams().updateHomeFlowTitle("Home");
           },
         ),
         RecordButton(
           type: EventType.TOILET,
           message: "Time since last toilet event:",
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+          onPressed: () async {
+            await Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
                   create: (context) => EditModel(event: Event(type: EventType.TOILET)),
                   child: EditToilet(navKey: homeKey)
               );
             }));
+
+            if (!mounted) return;
+
+            Streams().updateHomeFlowTitle("Home");
           },
         ),
       ],

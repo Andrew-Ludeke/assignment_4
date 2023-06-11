@@ -1,3 +1,4 @@
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/model/TimelineModel.dart';
 import 'package:assignment_4/timeline/Daily.dart';
 import 'package:assignment_4/Navigation.dart';
@@ -13,7 +14,7 @@ class Timeline extends StatefulWidget {
 }
 
 class _TimelineState extends State<Timeline> {
-    @override
+  @override
   Widget build(BuildContext context) {
     return buildCalendar(context);
   }

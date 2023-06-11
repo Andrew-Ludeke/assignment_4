@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class EditToilet extends StatefulWidget {
-  const EditToilet({super.key, required this.navKey});
+  const EditToilet({super.key, required this.navKey, this.isEditing = false});
 
   final GlobalKey<NavigatorState> navKey;
+  final bool isEditing;
 
   @override
   State<EditToilet> createState() => _EditToiletState();
@@ -26,7 +28,19 @@ class _EditToiletState extends State<EditToilet> {
   }
 
   @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+
+    if (widget.isEditing) {
+      Streams().updateTimelineFlowTitle("Edit Toilet");
+    } else {
+      Streams().updateHomeFlowTitle("Edit Toilet");
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(

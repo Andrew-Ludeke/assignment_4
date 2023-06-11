@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/model/Event.dart';
 import 'package:assignment_4/widgets/DataLabel.dart';
 import 'package:assignment_4/model/DetailsModel.dart';
@@ -24,6 +25,13 @@ class _ToiletDetailsState extends State<ToiletDetails> {
   TextStyle labelStyle = const TextStyle(
     fontSize: 24,
   );
+
+  @override
+  void initState() {
+    super.initState();
+
+    Streams().updateTimelineFlowTitle('Toilet Details');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +71,8 @@ class _ToiletDetailsState extends State<ToiletDetails> {
                       );
 
                       if (!mounted) return;
+
+                      Streams().updateTimelineFlowTitle('Toilet Details');
 
                       if (newEvent != null) {
                         model.isDirty = true;

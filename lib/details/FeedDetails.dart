@@ -1,3 +1,4 @@
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/model/Event.dart';
 import 'package:assignment_4/timeline/Daily.dart';
 import 'package:assignment_4/widgets/DataLabel.dart';
@@ -21,6 +22,13 @@ class _FeedDetailsState extends State<FeedDetails> {
   TextStyle labelStyle = const TextStyle(
     fontSize: 24,
   );
+
+  @override
+  void initState() {
+    super.initState();
+
+    Streams().updateTimelineFlowTitle('Feed Details');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +60,8 @@ class _FeedDetailsState extends State<FeedDetails> {
                     );
 
                     if (!mounted) return;
+
+                    Streams().updateTimelineFlowTitle('Feed Details');
 
                     if (newEvent != null) {
                       model.isDirty = true;

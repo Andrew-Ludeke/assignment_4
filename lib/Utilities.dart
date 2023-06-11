@@ -1,5 +1,11 @@
 import 'package:intl/intl.dart';
 
+String? formatDate(DateTime? time) {
+  if (time == null) return null;
+
+  return DateFormat.yMMMd().format(time);
+}
+
 String? formatTime(DateTime? time) {
   if (time == null) return null;
 

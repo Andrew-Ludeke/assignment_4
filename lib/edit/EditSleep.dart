@@ -1,12 +1,14 @@
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/edit/TimingContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EditSleep extends StatefulWidget {
-  const EditSleep({super.key, required this.navKey});
+  const EditSleep({super.key, required this.navKey, this.isEditing = false});
 
   final GlobalKey<NavigatorState> navKey;
+  final bool isEditing;
 
   @override
   State<EditSleep> createState() => _EditSleepState();
@@ -17,7 +19,19 @@ class _EditSleepState extends State<EditSleep> {
   final TextStyle radioStyle = const TextStyle(fontSize: 9.0);
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.isEditing) {
+      Streams().updateTimelineFlowTitle("Edit Sleep");
+    } else {
+      Streams().updateHomeFlowTitle("Edit Sleep");
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(

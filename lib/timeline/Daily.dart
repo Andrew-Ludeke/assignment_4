@@ -1,3 +1,4 @@
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/widgets/DataLabel.dart';
 import 'package:assignment_4/edit/EditFeed.dart';
 import 'package:assignment_4/edit/EditSleep.dart';
@@ -28,6 +29,13 @@ class Daily extends StatefulWidget {
 
 class _DailyState extends State<Daily> {
   bool isVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Streams().updateTimelineFlowTitle(formatDate(widget.today) ?? 'Daily Details');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +142,8 @@ class _DailyState extends State<Daily> {
                         );
 
                         if (!mounted) return;
+
+                        Streams().updateTimelineFlowTitle(formatDate(widget.today) ?? 'Daily Details');
 
                         if (newEvent != null) {
                           model.updateEvent(newEvent);
@@ -256,6 +266,8 @@ class _DailyState extends State<Daily> {
               );
 
               if (!mounted) return;
+
+              Streams().updateTimelineFlowTitle(formatDate(widget.today) ?? 'Daily Details');
 
               if (newEvent != null) {
                 model.updateEvent(newEvent);

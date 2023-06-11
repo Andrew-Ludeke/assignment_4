@@ -1,3 +1,4 @@
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/model/Event.dart';
 import 'package:assignment_4/widgets/DataLabel.dart';
 import 'package:assignment_4/model/DetailsModel.dart';
@@ -20,6 +21,13 @@ class _SleepDetailsState extends State<SleepDetails> {
   TextStyle labelStyle = const TextStyle(
     fontSize: 24,
   );
+
+  @override
+  void initState() {
+    super.initState();
+
+    Streams().updateTimelineFlowTitle('Sleep Details');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +61,8 @@ class _SleepDetailsState extends State<SleepDetails> {
                         );
 
                         if (!mounted) return;
+
+                        Streams().updateTimelineFlowTitle('Sleep Details');
 
                         if (newEvent != null) {
                           model.isDirty = true;

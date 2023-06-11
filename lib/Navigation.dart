@@ -6,9 +6,13 @@ import 'package:assignment_4/timeline/Timeline.dart';
 final GlobalKey<NavigatorState> homeKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> timelineKey = GlobalKey<NavigatorState>();
 
-HomeNav homeNav = const HomeNav();
-TimelineNav timelineNav = const TimelineNav();
+String homeTitle = 'home';
+String timelineTitle = 'home';
 
+//HomeNav homeNav = const HomeNav();
+//TimelineNav timelineNav = const TimelineNav();
+
+/*
 class HomeNav extends StatefulWidget {
     const HomeNav({super.key});
 
@@ -17,6 +21,7 @@ class HomeNav extends StatefulWidget {
 }
 
 class _HomeNavState extends State<HomeNav> with AutomaticKeepAliveClientMixin<HomeNav> {
+    String title = 'Hello';
     @override
     bool get wantKeepAlive => true;
 
@@ -65,4 +70,6 @@ Navigator timelineNav = Navigator(
         builder: (context) => const Timeline()
     )
 );
+*/
+
 */

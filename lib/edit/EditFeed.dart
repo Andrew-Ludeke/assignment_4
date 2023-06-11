@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EditFeed extends StatefulWidget {
-  const EditFeed({super.key, required this.navKey});
+  const EditFeed({super.key, required this.navKey, this.isEditing = false});
 
   final GlobalKey<NavigatorState> navKey;
+  final bool isEditing;
 
   @override
   State<EditFeed> createState() => _EditFeedState();
@@ -18,6 +19,18 @@ class EditFeed extends StatefulWidget {
 class _EditFeedState extends State<EditFeed> {
 
   final TextStyle radioStyle = const TextStyle(fontSize: 9.0);
+
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEditing) {
+      Streams().updateTimelineFlowTitle('Edit Feed');
+    } else {
+      Streams().updateHomeFlowTitle('Edit Feed');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

@@ -13,22 +13,39 @@ class Streams {
     return _singleton;
   }
 
-  StreamController<String> pageTitle = StreamController<String>();
-  StreamController<EventType> _latestStream = StreamController<EventType>();
+  final StreamController<String> _pageTitle = StreamController<String>();
+  final StreamController<String> _homeFlowTitle = StreamController<String>();
+  final StreamController<String> _timelineFlowTitle = StreamController<String>();
+  final StreamController<EventType> _latestStream = StreamController<EventType>();
 
-  Stream<String> get pageTitleStream => pageTitle.stream;
+  Stream<String> get pageTitle => _pageTitle.stream;
+  Stream<String> get homeFlowTitle => _homeFlowTitle.stream;
+  Stream<String> get timelineFlowTitle => _timelineFlowTitle.stream;
   Stream<EventType> get latestStream => _latestStream.stream;
 
   void emitEvent(EventType type) {
-    print("EMITTED");
     _latestStream.sink.add(type);
   }
 
-  void updatePateTitle(String title) {
-    pageTitle.sink.add(title);
+  void updatePageTitle(String title) {
+    print('setting page title: $title');
+    _pageTitle.sink.add(title);
+  }
+
+  void updateHomeFlowTitle(String title) {
+    _homeFlowTitle.sink.add(title);
+    updatePageTitle(title);
+  }
+
+  void updateTimelineFlowTitle(String title) {
+    _timelineFlowTitle.sink.add(title);
+    updatePageTitle(title);
   }
 
   dispose() {
-    pageTitle.close();
+    _pageTitle.close();
+    _latestStream.close();
+    _homeFlowTitle.close();
+    _timelineFlowTitle.close();
   }
 }

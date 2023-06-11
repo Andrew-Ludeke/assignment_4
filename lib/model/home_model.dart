@@ -40,15 +40,13 @@ class HomeModel extends ChangeNotifier {
     return _now!.difference(_lastToilet!.time!);
   }
 
-  void getLatestEvents() async {
-    _lastFeed = await _eventRepo.getLatest(EventType.FEED);
-    _lastSleep = await _eventRepo.getLatest(EventType.SLEEP);
-    _lastToilet = await _eventRepo.getLatest(EventType.TOILET);
-    notifyListeners();
+  void getLatestEvents() {
+    getLatest(EventType.FEED);
+    getLatest(EventType.SLEEP);
+    getLatest(EventType.TOILET);
   }
 
   void getLatest(EventType type) async {
-    print("RECEIVED");
     switch (type) {
       case EventType.FEED: _lastFeed = await _eventRepo.getLatest(EventType.FEED);
       case EventType.SLEEP: _lastSleep = await _eventRepo.getLatest(EventType.SLEEP);
