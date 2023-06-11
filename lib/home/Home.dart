@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:assignment_4/edit/EditFeed.dart';
 import 'package:assignment_4/edit/EditSleep.dart';
 import 'package:assignment_4/edit/EditToilet.dart';
-import 'package:assignment_4/edit/RecordButton.dart';
+import 'package:assignment_4/home/RecordButton.dart';
 import 'package:assignment_4/Navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +27,7 @@ class _HomeState extends State<Home> {
       children: <Widget>[
         RecordButton(
           type: EventType.FEED,
-          message: "Time since last feed event:",
+          message: "Time since last:",
           onPressed: () async {
             await homeKey.currentState!.push(MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
@@ -41,9 +41,10 @@ class _HomeState extends State<Home> {
             Streams().updateHomeFlowTitle("Home");
           },
         ),
+        const SizedBox(height: 75.0),
         RecordButton(
           type: EventType.SLEEP,
-          message: "Time since last sleep event:",
+          message: "Time since last:",
           onPressed: () async {
             await Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
@@ -57,9 +58,10 @@ class _HomeState extends State<Home> {
             Streams().updateHomeFlowTitle("Home");
           },
         ),
+        const SizedBox(height: 75.0),
         RecordButton(
           type: EventType.TOILET,
-          message: "Time since last toilet event:",
+          message: "Time since last:",
           onPressed: () async {
             await Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ChangeNotifierProvider<EditModel>(
