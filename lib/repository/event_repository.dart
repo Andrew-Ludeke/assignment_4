@@ -49,4 +49,9 @@ class EventRepository {
 
     return event;
   }
+
+  Future<void> delete(Event event) async {
+    DocumentReference docRef = collection.doc(event.id);
+    return await docRef.delete();
+  }
 }

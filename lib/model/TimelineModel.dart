@@ -16,16 +16,7 @@ class TimelineModel extends ChangeNotifier {
   TimelineModel({required DateTime today}) : _today = today {
     _events = <Event>[];
     _eventList = <EventListItem>[];
-    /*
-    getEventList().then((_) => calculateEventList()
-      /*
-        (_) {
-          eventList = _events.map((e) => EventListItem(event: e, isSelected: false)).toList();
-          //notifyListeners();
-        }
-        */
-    );
-    */
+    getEventList().then((_) => calculateEventList());
   }
 
   void calculateEventList() {
@@ -61,11 +52,13 @@ class TimelineModel extends ChangeNotifier {
 
   Future<List<EventListItem>> get eventList async {
     print("\n\nGETTING LIST\n\n");
+    /*
     if (_events.isEmpty) {
       print("\n\nFETCHING LIST FROM DATABASE\n\n");
       await getEventList();
       calculateEventList();
     }
+    */
 
     return _eventList
         .where((item) => _filter == null ? true : item.event.type == _filter)
@@ -108,18 +101,22 @@ class TimelineModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteSelection() {
-    for (EventListItem item in _eventList.where((item) => item.isSelected)) {
+  void deleteSelection() async {
+    List<EventListItem> toDelete = _eventList
+        .where((item) => item.isSelected)
+        .toList();
+
+    for (EventListItem item in toDelete) {
       Event event = item.event;
       if (!_eventList.remove(item)) continue;
       if (!_events.remove(event)) continue;
-      deleteEvent(event);
+      await deleteEvent(event);
     }
     notifyListeners();
   }
 
-  bool deleteEvent(Event event) {
-    return false;
+  Future<void> deleteEvent(Event event) async {
+    return await _eventRepo.delete(event);
   }
 
   Future<void> getEventList() async {

@@ -108,11 +108,6 @@ class _DailyState extends State<Daily> {
                       onPressed: model.selected == 1
                       ? () async {
                         Event event = model.getSelectedEvent();
-                        /*
-                            .eventList.where((item) => item.isSelected)
-                            .first
-                            .event;
-                        */
 
                         if (event.type == null) {
                           // TODO: Toast error
@@ -202,10 +197,9 @@ class _DailyState extends State<Daily> {
                   builder: (context, snapshot) {
 
                     if (snapshot.connectionState != ConnectionState.done) {
-                      return const SizedBox(
-                        height: 180,
-                        child: Center(child: CircularProgressIndicator()),
-                      );
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                      return const Center(child: Text("Not events"));
                     }
 
                     return ListView.builder(
