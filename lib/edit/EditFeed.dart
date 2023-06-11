@@ -36,56 +36,63 @@ class _EditFeedState extends State<EditFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                TimingContainer(isEditing: widget.isEditing),
-                const Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text('Feed Type', style: TextStyle(fontSize: 24.0)),
-                ),
-                Row(
-                  children: [
-                    buildRadioButton('Left', FeedType.LEFT),
-                    buildRadioButton('Right', FeedType.RIGHT),
-                    buildRadioButton('Bottle', FeedType.BOTTLE),
-                  ],
-                ),
-                Expanded(
-                  child: Consumer<EditModel>(
-                      builder: buildNotes
+    return WillPopScope(
+      onWillPop: () async {
+        if (isSaving) return false;
+        confirmDiscard(context);
+        return false;
+      },
+      child : Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TimingContainer(isEditing: widget.isEditing),
+                  const Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text('Feed Type', style: TextStyle(fontSize: 24.0)),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Consumer<EditModel>(
-                      builder: (context, model, _) => ElevatedButton(
-                          onPressed: () => confirmDiscard(context),
-                          child: const Text('Discard')
-                      ),
+                  Row(
+                    children: [
+                      buildRadioButton('Left', FeedType.LEFT),
+                      buildRadioButton('Right', FeedType.RIGHT),
+                      buildRadioButton('Bottle', FeedType.BOTTLE),
+                    ],
+                  ),
+                  Expanded(
+                    child: Consumer<EditModel>(
+                        builder: buildNotes
                     ),
-                    Consumer<EditModel>(
-                      builder: (context, model, _) => ElevatedButton(
-                          onPressed: () => confirmSave(context),
-                          child: const Text('Save')
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Consumer<EditModel>(
+                        builder: (context, model, _) => ElevatedButton(
+                            onPressed: () => confirmDiscard(context),
+                            child: const Text('Discard')
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                      Consumer<EditModel>(
+                        builder: (context, model, _) => ElevatedButton(
+                            onPressed: () => confirmSave(context),
+                            child: const Text('Save')
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-          Offstage(
-            offstage: !isSaving,
-            child: const Center(
-              child: CircularProgressIndicator(),
+            Offstage(
+              offstage: !isSaving,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
-          ),
-        ]
+          ]
+      ),
     );
   }
 
