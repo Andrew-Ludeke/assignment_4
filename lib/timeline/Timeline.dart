@@ -31,13 +31,17 @@ class _TimelineState extends State<Timeline> {
         //lastDate: DateTime(nextYear, nextMonth, 1),
         firstDate: DateTime(1970, 1, 1),
         lastDate: DateTime(2999, 12, 1),
-        onDateChanged: (value) {
-          timelineKey.currentState!.push(MaterialPageRoute(builder: (context) {
+        onDateChanged: (value) async {
+          await timelineKey.currentState!.push(MaterialPageRoute(builder: (context) {
             return ChangeNotifierProvider<TimelineModel>(
               create: (context) => TimelineModel(today: value),
               child: Daily(today: value),
             );
           }));
+
+          if (!mounted) return;
+
+          Streams().updateTimelineFlowTitle('Timeline');
         },
     );
   }

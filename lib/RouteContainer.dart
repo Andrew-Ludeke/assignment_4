@@ -45,9 +45,7 @@ class _RouteContainerState extends State<RouteContainer> {
     return WillPopScope(
       onWillPop: () async {
         if (index == 1) {
-          setState(() {
-            index = 0;
-          });
+          selectTab(0);
           return false;
         }
         return true;
