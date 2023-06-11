@@ -20,6 +20,8 @@ class _EditFeedState extends State<EditFeed> {
 
   final TextStyle radioStyle = const TextStyle(fontSize: 9.0);
 
+  bool isSaving = false;
+
 
   @override
   void initState() {
@@ -34,46 +36,56 @@ class _EditFeedState extends State<EditFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
+    return Stack(
         children: [
-          TimingContainer(isEditing: widget.isEditing),
-          const Align(
-            alignment: Alignment.bottomLeft,
-            child: Text('Feed Type', style: TextStyle(fontSize: 24.0)),
-          ),
-          Row(
-            children: [
-              buildRadioButton('Left', FeedType.LEFT),
-              buildRadioButton('Right', FeedType.RIGHT),
-              buildRadioButton('Bottle', FeedType.BOTTLE),
-            ],
-          ),
-          Expanded(
-            child: Consumer<EditModel>(
-                builder: buildNotes
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                TimingContainer(isEditing: widget.isEditing),
+                const Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text('Feed Type', style: TextStyle(fontSize: 24.0)),
+                ),
+                Row(
+                  children: [
+                    buildRadioButton('Left', FeedType.LEFT),
+                    buildRadioButton('Right', FeedType.RIGHT),
+                    buildRadioButton('Bottle', FeedType.BOTTLE),
+                  ],
+                ),
+                Expanded(
+                  child: Consumer<EditModel>(
+                      builder: buildNotes
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Consumer<EditModel>(
+                      builder: (context, model, _) => ElevatedButton(
+                          onPressed: () => confirmDiscard(context),
+                          child: const Text('Discard')
+                      ),
+                    ),
+                    Consumer<EditModel>(
+                      builder: (context, model, _) => ElevatedButton(
+                          onPressed: () => confirmSave(context),
+                          child: const Text('Save')
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Consumer<EditModel>(
-                builder: (context, model, _) => ElevatedButton(
-                    onPressed: () => confirmDiscard(context),
-                    child: const Text('Discard')
-                ),
-              ),
-              Consumer<EditModel>(
-                builder: (context, model, _) => ElevatedButton(
-                    onPressed: () => confirmSave(context),
-                    child: const Text('Save')
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
+          Offstage(
+            offstage: !isSaving,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ]
     );
   }
 
@@ -113,11 +125,11 @@ class _EditFeedState extends State<EditFeed> {
 
   void confirmDiscard(BuildContext context) {
     TextButton confirmButton = TextButton(
-      onPressed: () {
-        Navigator.of(context, rootNavigator: true).pop();
-        widget.navKey.currentState?.pop(null);
-      },
-      child: const Text('Discard')
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).pop();
+          widget.navKey.currentState?.pop(null);
+        },
+        child: const Text('Discard')
     );
 
     TextButton denyButton = TextButton(
@@ -145,11 +157,17 @@ class _EditFeedState extends State<EditFeed> {
 
     TextButton confirmButton = TextButton(
         onPressed: () {
+          setState(() {
+            isSaving = true;
+          });
           Navigator.of(context, rootNavigator: true).pop();
 
           EditModel model = Provider.of<EditModel>(context, listen: false);
 
           model.persist().then( (_) {
+            setState(() {
+              isSaving = false;
+            });
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text("Event saved!"),
               duration: Duration(seconds: 2),

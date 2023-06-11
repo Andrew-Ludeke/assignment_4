@@ -27,6 +27,8 @@ class _EditToiletState extends State<EditToilet> {
     });
   }
 
+  bool isSaving = false;
+
   @override
   void setState(VoidCallback fn) {
     super.setState(fn);
@@ -41,180 +43,190 @@ class _EditToiletState extends State<EditToilet> {
   @override
   Widget build(BuildContext context) {
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          TimeEntryRow(
-            label: "Time",
-            buildFunction: (context, model, _) => buildTextField(
-                context: context,
-                model: model,
-                getTime: (mdl) => mdl.time,
-                setTime: (mdl, value) => mdl.time = value,
-                hint: 'enter time'
-            ),
-          ),
-          Expanded(
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: Consumer<EditModel>(
-                    builder: (context, model, _) => FutureBuilder(
-                      future: model.imgFile,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.done) {
-                            XFile? img = snapshot.data;
-
-                            if (img == null) {
-                              return Image.asset(
-                                'assets/images/placeholder.png',
-                                height: 180,
-                              );
-                            }
-
-                            return Image.file(
-                              File(img.path),
-                              height: 180,
-                            );
-                          } else {
-                            return const SizedBox(
-                              height: 180,
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          }
-                        }
-                    ),
-                  ),
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TimeEntryRow(
+                label: "Time",
+                buildFunction: (context, model, _) => buildTextField(
+                    context: context,
+                    model: model,
+                    getTime: (mdl) => mdl.time,
+                    setTime: (mdl, value) => mdl.time = value,
+                    hint: 'enter time'
                 ),
-                Positioned(
-                  right: 10,
-                  top: 10,
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: toggleVisibility,
-                        child: const Icon(Icons.add),
-                      ),
-                      Visibility(
-                        visible: isVisible,
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                Future<XFile?> pickImage() async {
-                                  ImagePicker picker = ImagePicker();
-                                  XFile? img = await picker.pickImage(source: ImageSource.gallery);
-                                  return img;
+              ),
+              Expanded(
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned.fill(
+                      child: Consumer<EditModel>(
+                        builder: (context, model, _) => FutureBuilder(
+                            future: model.imgFile,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                XFile? img = snapshot.data;
+
+                                if (img == null) {
+                                  return Image.asset(
+                                    'assets/images/placeholder.png',
+                                    height: 180,
+                                  );
                                 }
-                                EditModel model = Provider.of<EditModel>(context, listen: false);
-                                model.imgFile = pickImage();
-                              },
-                              child: const Icon(Icons.folder),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                Future<XFile?> pickImage() async {
-                                  ImagePicker picker = ImagePicker();
-                                  return await picker.pickImage(source: ImageSource.camera);
-                                }
-                                EditModel model = Provider.of<EditModel>(context, listen: false);
-                                model.imgFile = pickImage();
-                              },
-                              child: const Icon(Icons.camera),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                EditModel model = Provider.of<EditModel>(context, listen: false);
-                                if (model.imgPath == null) {
-                                  model.imgUri = null;
-                                }
-                                model.imgFile = Future.value(null);
-                              },
-                              child: const Icon(Icons.delete),
-                            ),
-                          ],
+
+                                return Image.file(
+                                  File(img.path),
+                                  height: 180,
+                                );
+                              } else {
+                                return const SizedBox(
+                                  height: 180,
+                                  child: Center(child: CircularProgressIndicator()),
+                                );
+                              }
+                            }
                         ),
                       ),
-                    ],
+                    ),
+                    Positioned(
+                      right: 10,
+                      top: 10,
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: toggleVisibility,
+                            child: const Icon(Icons.add),
+                          ),
+                          Visibility(
+                            visible: isVisible,
+                            child: Column(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    Future<XFile?> pickImage() async {
+                                      ImagePicker picker = ImagePicker();
+                                      XFile? img = await picker.pickImage(source: ImageSource.gallery);
+                                      return img;
+                                    }
+                                    EditModel model = Provider.of<EditModel>(context, listen: false);
+                                    model.imgFile = pickImage();
+                                  },
+                                  child: const Icon(Icons.folder),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    Future<XFile?> pickImage() async {
+                                      ImagePicker picker = ImagePicker();
+                                      return await picker.pickImage(source: ImageSource.camera);
+                                    }
+                                    EditModel model = Provider.of<EditModel>(context, listen: false);
+                                    model.imgFile = pickImage();
+                                  },
+                                  child: const Icon(Icons.camera),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    EditModel model = Provider.of<EditModel>(context, listen: false);
+                                    if (model.imgPath == null) {
+                                      model.imgUri = null;
+                                    }
+                                    model.imgFile = Future.value(null);
+                                  },
+                                  child: const Icon(Icons.delete),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              const Align(
+                alignment: Alignment.bottomLeft,
+                child: Text('Contents', style: TextStyle(fontSize: 24.0)),
+              ),
+              Row(
+                children: [
+                  buildCheckBox(
+                    label: 'Wet',
+                    checkedWhen: (model) =>
+                    model.toiletContents == ToiletContents.WET
+                        ||  model.toiletContents == ToiletContents.WET_AND_DIRTY,
+                    onChanged: (model, value) {
+                      if (value == null) return;
+
+                      switch(model.toiletContents) {
+                        case ToiletContents.WET:
+                          model.toiletContents = ToiletContents.EMPTY;
+                        case ToiletContents.DIRTY:
+                          model.toiletContents = ToiletContents.WET_AND_DIRTY;
+                        case ToiletContents.WET_AND_DIRTY:
+                          model.toiletContents = ToiletContents.DIRTY;
+                        default:
+                          model.toiletContents = ToiletContents.WET;
+                      }
+                    },
                   ),
-                )
-              ],
-            ),
-          ),
-          const Align(
-            alignment: Alignment.bottomLeft,
-            child: Text('Contents', style: TextStyle(fontSize: 24.0)),
-          ),
-          Row(
-            children: [
-              buildCheckBox(
-                label: 'Wet',
-                checkedWhen: (model) =>
-                model.toiletContents == ToiletContents.WET
-                    ||  model.toiletContents == ToiletContents.WET_AND_DIRTY,
-                onChanged: (model, value) {
-                  if (value == null) return;
+                  buildCheckBox(
+                    label: 'Dirty',
+                    checkedWhen: (model) =>
+                    model.toiletContents == ToiletContents.DIRTY
+                        ||  model.toiletContents == ToiletContents.WET_AND_DIRTY,
+                    onChanged: (model, value) {
+                      if (value == null) return;
 
-                  switch(model.toiletContents) {
-                    case ToiletContents.WET:
-                      model.toiletContents = ToiletContents.EMPTY;
-                    case ToiletContents.DIRTY:
-                      model.toiletContents = ToiletContents.WET_AND_DIRTY;
-                    case ToiletContents.WET_AND_DIRTY:
-                      model.toiletContents = ToiletContents.DIRTY;
-                    default:
-                      model.toiletContents = ToiletContents.WET;
-                  }
-                },
+                      switch(model.toiletContents) {
+                        case ToiletContents.WET:
+                          model.toiletContents = ToiletContents.WET_AND_DIRTY;
+                        case ToiletContents.DIRTY:
+                          model.toiletContents = ToiletContents.EMPTY;
+                        case ToiletContents.WET_AND_DIRTY:
+                          model.toiletContents = ToiletContents.WET;
+                        default:
+                          model.toiletContents = ToiletContents.DIRTY;
+                      }
+                    },
+                  ),
+                ],
               ),
-              buildCheckBox(
-                label: 'Dirty',
-                checkedWhen: (model) =>
-                model.toiletContents == ToiletContents.DIRTY
-                    ||  model.toiletContents == ToiletContents.WET_AND_DIRTY,
-                onChanged: (model, value) {
-                  if (value == null) return;
-
-                  switch(model.toiletContents) {
-                    case ToiletContents.WET:
-                      model.toiletContents = ToiletContents.WET_AND_DIRTY;
-                    case ToiletContents.DIRTY:
-                      model.toiletContents = ToiletContents.EMPTY;
-                    case ToiletContents.WET_AND_DIRTY:
-                      model.toiletContents = ToiletContents.WET;
-                    default:
-                      model.toiletContents = ToiletContents.DIRTY;
-                  }
-                },
-              ),
-            ],
-          ),
-          Expanded(
-            child: Consumer<EditModel>(
-                builder: buildNotes
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Consumer<EditModel>(
-                builder: (context, model, _) => ElevatedButton(
-                    onPressed: () => confirmDiscard(context),
-                    child: const Text('Discard')
+              Expanded(
+                child: Consumer<EditModel>(
+                    builder: buildNotes
                 ),
               ),
-              Consumer<EditModel>(
-                builder: (context, model, _) => ElevatedButton(
-                    onPressed: () => confirmSave(context),
-                    child: const Text('Save')
-                ),
-              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Consumer<EditModel>(
+                    builder: (context, model, _) => ElevatedButton(
+                        onPressed: () => confirmDiscard(context),
+                        child: const Text('Discard')
+                    ),
+                  ),
+                  Consumer<EditModel>(
+                    builder: (context, model, _) => ElevatedButton(
+                        onPressed: () => confirmSave(context),
+                        child: const Text('Save')
+                    ),
+                  ),
+                ],
+              )
             ],
-          )
-        ],
-      ),
+          ),
+        ),
+        Offstage(
+          offstage: !isSaving,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -303,8 +315,14 @@ class _EditToiletState extends State<EditToilet> {
 
     TextButton confirmButton = TextButton(
         onPressed: () {
+          setState(() {
+            isSaving = true;
+          });
           Navigator.of(context, rootNavigator: true).pop();
           model.persist().then( (_) {
+            setState(() {
+              isSaving = false;
+            });
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text("Event saved!"),
               duration: Duration(seconds: 2),

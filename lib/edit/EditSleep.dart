@@ -18,6 +18,8 @@ class _EditSleepState extends State<EditSleep> {
 
   final TextStyle radioStyle = const TextStyle(fontSize: 9.0);
 
+  bool isSaving = false;
+
   @override
   void initState() {
     super.initState();
@@ -32,38 +34,48 @@ class _EditSleepState extends State<EditSleep> {
   @override
   Widget build(BuildContext context) {
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          TimingContainer(isEditing: widget.isEditing),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 64.0),
-              child: Consumer<EditModel>(
-                  builder: buildNotes
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Consumer<EditModel>(
-                builder: (context, model, _) => ElevatedButton(
-                    onPressed: () => confirmDiscard(context),
-                    child: const Text('Discard')
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TimingContainer(isEditing: widget.isEditing),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 64.0),
+                  child: Consumer<EditModel>(
+                      builder: buildNotes
+                  ),
                 ),
               ),
-              Consumer<EditModel>(
-                builder: (context, model, _) => ElevatedButton(
-                    onPressed: () => confirmSave(context),
-                    child: const Text('Save')
-                ),
-              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Consumer<EditModel>(
+                    builder: (context, model, _) => ElevatedButton(
+                        onPressed: () => confirmDiscard(context),
+                        child: const Text('Discard')
+                    ),
+                  ),
+                  Consumer<EditModel>(
+                    builder: (context, model, _) => ElevatedButton(
+                        onPressed: () => confirmSave(context),
+                        child: const Text('Save')
+                    ),
+                  ),
+                ],
+              )
             ],
-          )
-        ],
-      ),
+          ),
+        ),
+        Offstage(
+          offstage: !isSaving,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        )
+      ],
     );
   }
 
@@ -120,13 +132,19 @@ class _EditSleepState extends State<EditSleep> {
 
     TextButton confirmButton = TextButton(
         onPressed: () {
+          setState(() {
+            isSaving = true;
+          });
           Navigator.of(context, rootNavigator: true).pop();
           model.persist().then( (_) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Event saved!"),
-                duration: Duration(seconds: 2),
-              ));
-              widget.navKey.currentState?.pop(model.event.copy());
+            setState(() {
+              isSaving = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Event saved!"),
+              duration: Duration(seconds: 2),
+            ));
+            widget.navKey.currentState?.pop(model.event.copy());
           });
         },
         child: const Text('Save')
