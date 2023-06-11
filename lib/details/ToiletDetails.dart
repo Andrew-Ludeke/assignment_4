@@ -64,7 +64,7 @@ class _ToiletDetailsState extends State<ToiletDetails> {
                               builder: (context) {
                                 return ChangeNotifierProvider<EditModel>(
                                     create: (context) => EditModel(event: model.event.copy()),
-                                    child: EditToilet(navKey: timelineKey)
+                                    child: EditToilet(navKey: timelineKey, isEditing: true)
                                 );
                               }
                           )

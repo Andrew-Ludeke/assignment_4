@@ -131,9 +131,9 @@ class _DailyState extends State<Daily> {
                                       create: (context) => EditModel(event: event.copy()),
                                       builder: (context, _) {
                                         switch(event.type!) {
-                                          case EventType.FEED: return EditFeed(navKey: timelineKey);
-                                          case EventType.SLEEP: return EditSleep(navKey: timelineKey);
-                                          case EventType.TOILET: return EditToilet(navKey: timelineKey);
+                                          case EventType.FEED: return EditFeed(navKey: timelineKey, isEditing: true,);
+                                          case EventType.SLEEP: return EditSleep(navKey: timelineKey, isEditing: true);
+                                          case EventType.TOILET: return EditToilet(navKey: timelineKey, isEditing: true);
                                         }
                                       }
                                   );

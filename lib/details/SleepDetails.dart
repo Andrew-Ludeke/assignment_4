@@ -54,7 +54,7 @@ class _SleepDetailsState extends State<SleepDetails> {
                                 builder: (context) {
                                   return ChangeNotifierProvider<EditModel>(
                                       create: (context) => EditModel(event: model.event.copy()),
-                                      child: EditSleep(navKey: timelineKey)
+                                      child: EditSleep(navKey: timelineKey, isEditing: true)
                                   );
                                 }
                             )
