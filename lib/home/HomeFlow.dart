@@ -1,6 +1,8 @@
 import 'package:assignment_4/home/Home.dart';
 import 'package:assignment_4/Navigation.dart';
+import 'package:assignment_4/model/home_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeFlowRoutes {
   static const String ROOT = '/';
@@ -31,7 +33,10 @@ class _HomeFlowState extends State<HomeFlow> {
         key: widget.navKey,
         initialRoute: HomeFlowRoutes.ROOT,
         onGenerateRoute: (context) => MaterialPageRoute(
-            builder: (context) => const Home(title: "Home")
+          builder: (context) => ChangeNotifierProvider(
+            create: (BuildContext context) => HomeModel(),
+            child: const Home(title: "Home"),
+          ),
         ),
       ),
     );

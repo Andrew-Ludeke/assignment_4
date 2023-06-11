@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         RecordButton(
-          title: "Feed",
+          type: EventType.FEED,
           message: "Time since last feed event:",
           onPressed: () {
             homeKey.currentState!.push(MaterialPageRoute(builder: (context) {
@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
           },
         ),
         RecordButton(
-          title: "Sleep",
+          type: EventType.SLEEP,
           message: "Time since last sleep event:",
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
           },
         ),
         RecordButton(
-          title: "Toilet",
+          type: EventType.TOILET,
           message: "Time since last toilet event:",
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {

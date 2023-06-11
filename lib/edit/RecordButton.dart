@@ -1,13 +1,17 @@
+import 'package:assignment_4/Utilities.dart';
+import 'package:assignment_4/enum/EventType.dart';
+import 'package:assignment_4/model/home_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RecordButton extends StatefulWidget {
   const RecordButton(
       {super.key,
-        required this.title,
+        required this.type,
         required this.message,
         required this.onPressed});
 
-  final String title;
+  final EventType type;
   final String message;
   final void Function()? onPressed;
 
@@ -25,9 +29,16 @@ class _RecordButtonState extends State<RecordButton> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(widget.title),
+          Text(widget.type.description),
           Row(
-            children: <Widget>[Text(widget.message), Text("$time")],
+            children: <Widget>[
+              Text(widget.message),
+              Consumer<HomeModel>(
+                  builder: (context, model, _) {
+                    return Text(formatDuration(model.timeSince(widget.type)) ?? "N/A");
+                  }
+              ),
+            ],
           ),
         ],
       ),

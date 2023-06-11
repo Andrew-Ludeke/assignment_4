@@ -1,3 +1,4 @@
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
@@ -106,12 +107,27 @@ class TimelineModel extends ChangeNotifier {
         .where((item) => item.isSelected)
         .toList();
 
+    bool didDeleteFeed = false;
+    bool didDeleteSleep = false;
+    bool didDeleteToilet = false;
+
     for (EventListItem item in toDelete) {
       Event event = item.event;
       if (!_eventList.remove(item)) continue;
       if (!_events.remove(event)) continue;
+
+      switch (event.type) {
+        case EventType.FEED: didDeleteFeed = true;
+        case EventType.SLEEP: didDeleteSleep = true;
+        case EventType.TOILET: didDeleteToilet = true;
+        default: break;
+      }
       await deleteEvent(event);
     }
+    if (didDeleteFeed) Streams().emitEvent(EventType.FEED);
+    if (didDeleteSleep) Streams().emitEvent(EventType.SLEEP);
+    if (didDeleteToilet) Streams().emitEvent(EventType.TOILET);
+
     notifyListeners();
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/enum/ToiletContents.dart';
 import 'package:assignment_4/repository/event_repository.dart';
@@ -86,14 +87,14 @@ class EditModel extends ChangeNotifier {
       _event.imgUri = await _imgRepo.persist(_imgFile!);
     }
 
-    return await _eventRepo.persist(_event);
+    await _eventRepo.persist(_event);
+    Streams().emitEvent(_event.type!);
   }
 
   Future<XFile?> get imgFile async {
     if (_imgPath != null) {
       _imgFile = XFile(imgPath!);
     } else if (_event.imgUri != null && _imgFile == null) {
-      print(_imgPath ?? 'null');
       _imgFile = await _imgRepo.fetch(_event.imgUri!);
     }
     return _imgFile;

@@ -1,3 +1,4 @@
+import 'package:assignment_4/enum/EventType.dart';
 import 'package:assignment_4/model/Event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -53,5 +54,25 @@ class EventRepository {
   Future<void> delete(Event event) async {
     DocumentReference docRef = collection.doc(event.id);
     return await docRef.delete();
+  }
+
+  Future<Event?> getLatest(EventType type) async {
+    QuerySnapshot snapshot = await collection
+        .where('type', isEqualTo: type.name)
+        .orderBy('time', descending: true)
+        .limit(1)
+        .get();
+
+    QueryDocumentSnapshot doc = snapshot.docs.first;
+
+    return Event.fromJson(doc.data() as Map<String, dynamic>);
+
+    /*
+    try {
+      return Event.fromJson(doc.data() as Map<String, dynamic>);
+    } catch (e) {
+      return null;
+    }
+    */
   }
 }

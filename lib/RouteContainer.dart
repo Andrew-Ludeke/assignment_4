@@ -29,7 +29,7 @@ class _RouteContainerState extends State<RouteContainer> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: StreamBuilder<String?>(
-          stream: streamProvider.pageTitleStream,
+          stream: Streams().pageTitleStream,
           initialData: 'Home',
           builder: (context, snapshot) => Text(snapshot.data ?? 'Narnia'),
         ),

@@ -1,3 +1,4 @@
+import 'package:assignment_4/StreamProvider.dart';
 import 'package:assignment_4/model/EditModel.dart';
 import 'package:assignment_4/enum/FeedType.dart';
 import 'package:assignment_4/edit/TimingContainer.dart';
@@ -136,11 +137,11 @@ class _EditFeedState extends State<EditFeed> {
           EditModel model = Provider.of<EditModel>(context, listen: false);
 
           model.persist().then( (_) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Event saved!"),
-                duration: Duration(seconds: 2),
-              ));
-              widget.navKey.currentState?.pop(model.event.copy());
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Event saved!"),
+              duration: Duration(seconds: 2),
+            ));
+            widget.navKey.currentState?.pop(model.event.copy());
           });
         },
         child: const Text('Save')
