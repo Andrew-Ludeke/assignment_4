@@ -156,9 +156,7 @@ class _DailyState extends State<Daily> {
                   Consumer<TimelineModel>(
                     builder: (context, model, _) => TextButton(
                       onPressed: model.selected > 0
-                        ? () {
-                          model.deleteSelection();
-                        }
+                        ? () => confirmDelete(context, model)
                         : null,
                       child: const Icon(Icons.delete),
                     ),
@@ -314,6 +312,35 @@ class _DailyState extends State<Daily> {
             }
           );
         },
+      ),
+    );
+  }
+
+  void confirmDelete(BuildContext context, TimelineModel model) {
+    TextButton confirmButton = TextButton(
+        onPressed: () async {
+          model.deleteSelection();
+          Navigator.of(context, rootNavigator: true).pop();
+        },
+        child: const Text('Delete')
+    );
+
+    TextButton denyButton = TextButton(
+        onPressed: () async {
+          Navigator.of(context, rootNavigator: true).pop();
+        },
+        child: const Text('Cancel')
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete'),
+        content: const Text('Are you sure you want to delete these events?'),
+        actions: [
+          confirmButton,
+          denyButton,
+        ],
       ),
     );
   }
